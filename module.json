@@ -26,9 +26,9 @@
         "id": "worldofdarkness",
         "type": "system",
         "compatibility": {
-          "minimum": "13",
-          "verified": "13",
-          "maximum": "13"
+          "minimum": "5.0.12",
+          "verified": "5.0.12",
+          "maximum": "5.0.12"
         }
       }
     ]
