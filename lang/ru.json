@@ -326,11 +326,11 @@
             "fallen": "Падшие",
             "mad": "Безумцы",
             "name": "Имя",
-            "appearance": "Привлекательность",
-            "background": "Факты биографии",
+            "appearance": "Внешность",
+            "background": "Биография",
             "tips": "Советы по отыгрышу",
             "nature": "Натура",
-            "demeanor": "Манера поведения",
+            "demeanor": "Маска",
             "concept": "Концепция",
             "derangement": "Психическое расстройство",
             "worldanvil": "World Anvil",
@@ -773,40 +773,40 @@
                 "earthbound": "Прикованные к земле"
             }
         },
-		"attributes": {
-			"attributes": "Attributes",
-			"physical": "Physical",
-			"social": "Social",
-			"mental": "Mental",
-			"strength": "Strength",
-			"charisma": "Charisma",
-			"intelligence": "Intelligence",
-			"dexterity": "Dexterity",
-			"manipulation": "Manipulation",
-			"wits": "Wits",
-			"stamina": "Stamina",
-			"composure": "Composure",
-			"resolve": "Resolve",
-			"perception": "Perception",
-			"appearance": "Appearance",
+"attributes": {
+			"attributes": "Атрибуты",
+			"physical": "Физические",
+			"social": "Социальные",
+			"mental": "Психические",
+			"strength": "Сила",
+			"charisma": "Обаяние",
+			"intelligence": "Интеллект",
+			"dexterity": "Ловкость",
+			"manipulation": "Манипуляция",
+			"wits": "Смекалка",
+			"stamina": "Выносливость",
+			"composure": "Хладнокровие",
+			"resolve": "Решимость",
+			"perception": "Восприятие",
+			"appearance": "Привлекательность",
 			"short": {
-				"str": "Str",
-				"dex": "Dex",
-				"sta": "Sta",
-				"man": "Man",
-				"app": "App",
-				"per": "Per"
+				"str": "Сил",
+				"dex": "Лов",
+				"sta": "Вын",
+				"man": "Ман",
+				"app": "Привл",
+				"per": "Вос"
 			},
 			"bonus": {
-				"strength": "Strength bonus",
-				"dexterity": "Dexterity bonus",
-				"stamina": "Stamina bonus",
-				"manipulation": "Manipulation bonus",
-				"appearance": "Appearance bonus"				
+				"strength": "Бонус к Силе",
+				"dexterity": "Бонус к Ловкости",
+				"stamina": "Бонус к Выносливости",
+				"manipulation": "Бонус к Манипуляции",
+				"appearance": "Бонус к Привлекательности"				
 			},
 			"diff": {
-				"perception": "Perception difficulty",
-				"wits": "Wits difficulty"
+				"perception": "Сложность проверки Восприятия",
+				"wits": "Сложность проверки Смекалки"
 			}
 		},
         "abilities": {
@@ -833,7 +833,7 @@
             "legerdemain": "Ловкость рук",
             "persuasion": "Убеждение",
             "primalurge": "Первобытный инстинкт",
-            "streetwise": "Уличная смекалка",
+            "streetwise": "Уличное чутьё",
             "subterfuge": "Хитрость",
             
             "animalken": "Обращение с животными",
@@ -941,7 +941,7 @@
                 "conviction": "Решимость",
                 "selfcontrol": "Самоконтроль",
                 "instinct": "Инстинкты",
-                "courage": "Храбрость",
+                "courage": "Смелость",
                 "mercy": "Милосердие",
                 "vision": "Видение",
                 "zeal": "Рвение"
@@ -1112,9 +1112,9 @@
                 "active": "Активна",
                 "armor": "Броня",
                 "dexpen": "Штр. Ловк.",
-                "soakbashing": "Поглощение лёгкого урона",
-                "soaklethal": "Поглощение тяжёлого урона",
-                "soakaggravated": "Поглощение аграввированного урона",
+                "soakbashing": "Погл Л",
+                "soaklethal": "Погл Т",
+                "soakaggravated": "Погл А",
                 "penalty": "Штраф к Ловкости"
             },
             "mode": {
@@ -1197,7 +1197,7 @@
             "activegift": "Активные Дары",
             "activerote": "Активная формула заклинания",
             "disciplines": "Дисциплины",
-            "combinations": "Сочетанные дисциплины",
+            "combinations": "Комбинированные дисциплины",
             "paths": "Пути",
             "rituals": "Ритуалы",
             "unsorteddisciplines": "Здесь собраны все несортированные силы дисциплин, которым нужно назначить Дисциплину. Нажмите на заголовок, чтобы распределить.",
@@ -1948,12 +1948,12 @@
             "variant": {
                 "sheettype": "Задать тип листа",
                 "notype": "Тип листа не выбран",
-                "general": "Общий тип",
-                "changeling": "Общий чейнджлинг",
-                "mortal": "Общий смертный",
-                "vampire": "Общий вампир",
-                "wraith": "Общий призрак",
-                "creature": "Общее создание",
+                "general": "Обычный тип",
+                "changeling": "Обычный чейнджлинг",
+                "mortal": "Обычный смертный",
+                "vampire": "Обычный вампир",
+                "wraith": "Обычный призрак",
+                "creature": "Обычное создание",
                 "info": "Эта настройка определяет, вариант какого листа используется.",
                 "description": "Эту настройку можно изменить в параметрах листа",
                 "lostbreeds": "Потерянные породы"
