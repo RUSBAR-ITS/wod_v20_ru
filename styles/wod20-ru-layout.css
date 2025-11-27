@@ -6,20 +6,20 @@
 /* === 1. Global actor sheet size === */
 
 body.langRU .wod-sheet:not(.minimized) {
-  min-width: 1100px;
-  width: 1100px;
+  min-width: 1400px;
+  width: 1400px;
   min-height: 900px;
 }
 
 /* Inner content area where all blocks (attributes, abilities, etc.) live */
 body.langRU .wod-sheet .sheet-inner-area {
-  width: 990px;
+  width: 1290px;
 }
 
 /* On medium-width screens, relax the minimum width, like other wide languages */
 @media all and (max-width: 1500px) {
   body.langRU .wod-sheet:not(.minimized) {
-    min-width: 900px;
+    min-width: 1200px;
   }
 }
 
@@ -44,7 +44,7 @@ body.langRU .wod-sheet .supernaturalAttribute.ability-headlineWidth {
 
 /* Attribute headline width (text part on the left) */
 body.langRU .attribute-headlineWidth {
-  width: 120px;
+  width: 150px;
 }
 
 /* Creature sheet – attribute headline in percentages */
@@ -56,17 +56,17 @@ body.langRU .creature .attribute-headlineWidth {
 
 /* Generic health headline, used outside specific sheets */
 body.langRU .health-headlineWidth {
-  width: 140px;
+  width: 180px;
 }
 
 /* Health headline on wod-sheet actor sheets */
 body.langRU .wod-sheet .health-headlineWidth {
-  width: 150px;
+  width: 200px;
 }
 
 /* Changeling health and armor text tend to be especially long */
 body.langRU .changeling .health-headlineWidth {
-  width: 180px;
+  width: 220px;
 }
 
 body.langRU .changeling .armor-type-width {
@@ -176,37 +176,4 @@ body.langRU .dialog-casting-type-label {
 /* Combobox row height */
 body.langRU .comboboxRow {
   height: 40px;
-}
-
-/* Combat tab → Armor block: custom column widths for RU
-   Columns (excluding drag handle):
-   1 = name, 2 = Bashing, 3 = Lethal, 4 = Aggravated, 5 = Dex penalty, 6 = action icons
-*/
-
-/* 1st column: armor name */
-body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-namebox,
-body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-namebox {
-  width: 150px;
-}
-
-/* 2nd–4th columns: soak values */
-body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-valuebox,
-body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-valuebox {
-  width: 170px;
-  text-align: center;
-}
-
-/* 5th column: Dex penalty */
-body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-smallbox,
-body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-smallbox {
-  width: 130px;
-  text-align: center;
-}
-
-/* 6th column: action/icon area on the right */
-body.langRU .wod20 .item-row-area.combat-armor-itemlist .iconBox {
-  width: 100px;
-  flex: 0 0 100px;
-  max-width: 100px;
-  justify-content: flex-end;
 }

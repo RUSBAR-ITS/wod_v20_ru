@@ -1,0 +1,47 @@
+/* wod20-ru-main-stats.css
+ * Layout tweaks for the 3rd block on the main tab
+ * (Virtues / Path / Willpower / Blood / Health).
+ *
+ * - Adds a vertical offset from the top for the whole block
+ * - Centers the Path (Humanity/Path) label above its dots
+ * - Makes the Path banner support multi-line text
+ */
+
+/* ---------- Path width configuration (optional) ---------- */
+
+:root {
+  /* Maximum visual width for the Path banner and its dots */
+  --wod20-mainstats-path-max-width: 240px;
+}
+
+/* ---------- 1. Vertical offset for the 3rd block ---------- */
+
+/* Extra padding inside the Core Stats area (virtue / path / health row) */
+.wod20 .wod20-main-advantages-row {
+  padding-top: 24px; /* можешь поставить 28–30px, если хочешь больше пространства */
+}
+
+/* ---------- 2. Centering the Path label and dots ---------- */
+
+/* Path banner: center it and limit its width so it matches the dot row */
+.wod20 .sheet-headline.sheet-banner-small[data-key="path"] {
+  max-width: var(--wod20-mainstats-path-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Path banner text: allow multi-line and keep background behind all lines */
+.wod20 .sheet-headline.sheet-banner-small[data-key="path"] .sheet-banner-text {
+  display: block;
+  height: auto;         /* grow with content height */
+  line-height: 1.2;     /* comfortable line height for 2 lines */
+  white-space: normal;  /* allow wrapping to the second line */
+}
+
+/* Path dots container: same visual width and centered in the column (if helper adds .path class) */
+.wod20 .sheet-boxcontainer.path {
+  max-width: var(--wod20-mainstats-path-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}

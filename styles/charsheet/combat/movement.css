@@ -1,0 +1,34 @@
+/* wod20-ru-movement.css
+ * Custom column widths for the movement block (combat tab).
+ * Adjust only the --*-width variables below.
+ */
+
+:root {
+  /* Left group: Walk / Jog / Run / Fly */
+  --wod20-move-label-width: 100px;
+  --wod20-move-value-width: 64px;
+
+  /* Right group: Vertical / Horizontal jump */
+  --wod20-jump-label-width: 300px;
+  --wod20-jump-value-width: 64px;
+}
+
+/* Left group: walk / jog / run / fly values */
+.wod20 .movementBox .movement-label {
+  width: var(--wod20-move-label-width);
+}
+
+.wod20 .movementBox .movement-value {
+  width: var(--wod20-move-value-width);
+  text-align: center;
+}
+
+/* Right group: vertical / horizontal jump */
+.wod20 .movementBox .movement-jump-label {
+  width: var(--wod20-jump-label-width);
+}
+
+.wod20 .movementBox .movement-jump-value {
+  width: var(--wod20-jump-value-width);
+  text-align: center;
+}

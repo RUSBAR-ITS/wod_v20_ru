@@ -1,0 +1,77 @@
+/* wod20-ru-combat-melee.css
+ * Column widths and icon alignment for Melee Weapons list (combat tab)
+ * Scoped to Russian UI via body.langRU
+ */
+
+/* Hide separate drag column in the header row */
+body.langRU .wod20 .headlineRow.combat-melee-itemlist .width-iconbox {
+  display: none;
+}
+
+/* Place drag handle inside the first column on item rows */
+body.langRU .wod20 .item-row-area.combat-melee-itemlist {
+  position: relative;
+}
+
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .width-iconbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 1: weapon name (header) */
+body.langRU .wod20 .headlineRow.combat-melee-itemlist .width-namebox {
+  width: 200px;
+  text-align: center;
+}
+
+/* 1: weapon name (rows) – width, indent and multiline */
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .width-namebox {
+  width: 200px;
+  padding-left: 22px;          /* 16px icon + spacing */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Allow row height to grow for 2-line names */
+body.langRU .wod20 .dragrow.combat-melee-itemlist {
+  align-items: flex-start;
+}
+
+/* 2: attribute (short label) */
+body.langRU .wod20 .headlineRow.combat-melee-itemlist .width-smallbox,
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .width-smallbox {
+  width: 120px;
+  text-align: center;
+}
+
+/* 3: ability (skill) */
+body.langRU .wod20 .headlineRow.combat-melee-itemlist .width-abilitybox,
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .width-abilitybox {
+  width: 150px;
+  text-align: center;
+}
+
+/* 4–N: numeric columns (accuracy, difficulty, damage, speed, reach, etc.) */
+body.langRU .wod20 .headlineRow.combat-melee-itemlist .width-valuebox,
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .width-valuebox {
+  width: 100px;
+  text-align: center;
+}
+
+/* Last column: action/icon box aligned to the far right */
+body.langRU .wod20 .item-row-area.combat-melee-itemlist .iconBox {
+  margin-left: auto;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}

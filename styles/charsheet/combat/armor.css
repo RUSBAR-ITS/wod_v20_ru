@@ -1,0 +1,70 @@
+/* wod20-ru-combat-armor.css
+ * Column widths and icon alignment for Armor list (combat tab)
+ * Scoped to Russian UI via body.langRU
+ */
+
+/* Hide separate drag column in the header row */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-iconbox {
+  display: none;
+}
+
+/* Place drag handle inside the first column on item rows */
+body.langRU .wod20 .item-row-area.combat-armor-itemlist {
+  position: relative;
+}
+
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-iconbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 1: armor name (header) */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-namebox {
+  width: 200px;
+  text-align: center;
+}
+
+/* 1: armor name (rows) – width, indent and multiline */
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-namebox {
+  width: 200px;
+  padding-left: 22px;          /* 16px icon + spacing */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Allow row height to grow for 2-line names */
+body.langRU .wod20 .dragrow.combat-armor-itemlist {
+  align-items: flex-start;
+}
+
+/* 2–4: soak columns (Bashing / Lethal / Aggravated) */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-valuebox,
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-valuebox {
+  width: 150px;
+  text-align: center;
+}
+
+/* 5: Dex penalty (small box) */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-smallbox,
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-smallbox {
+  width: 150px;
+  text-align: center;
+}
+
+/* 6: action/icon box aligned to the far right */
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .iconBox {
+  margin-left: auto;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}

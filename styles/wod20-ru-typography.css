@@ -1,0 +1,110 @@
+/* wod20-ru-typography.css
+ * Typography overrides for WoD20 when Russian language is active.
+ * - Compact Cyrillic font (PT Sans Narrow RU)
+ * - Adjusted font sizes for sheet elements
+ */
+
+/* === 1. Custom compact Cyrillic font (PT Sans Narrow) === */
+
+@font-face {
+  font-family: "PT Sans Narrow RU";
+  src: url("../fonts/PTSansNarrow-Bold.ttf") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PT Sans Narrow RU";
+  src: url("../fonts/PTSansNarrow-Regular.ttf") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base font on WoD20 sheets when Russian is active */
+body.langRU .wod-sheet {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+/* Titles and splat banners – compact bold font */
+body.langRU .wod-sheet .sheet-banner-text,
+body.langRU .wod-sheet .splatFont,
+body.langRU .wod-sheet .sheet-headline {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-weight: 700;
+}
+
+/* === 2. Font size overrides for WoD20 === */
+
+/* Base for inputs/selects/textarea */
+body.langRU .wod20 input,
+body.langRU .wod20 select,
+body.langRU .wod20 textarea {
+  font-size: 14px !important;
+}
+
+/* Info values (small stats in sheet header) */
+body.langRU .wod20 input.sheet-infoValues {
+  font-size: 14px !important;
+}
+
+/* Main sheet headline (big banner title on sheet) */
+body.langRU .wod-sheet .sheet-headline {
+  font-size: 22px !important;
+}
+
+/* Smaller headline text on sheet (section titles) */
+body.langRU .wod20 .headlineNormal {
+  font-size: 18px !important;
+}
+
+body.langRU .wod20 .headlineText {
+  font-size: 22px !important;
+}
+
+/* Lists and sub-headlines */
+body.langRU .wod20 .headlineList {
+  font-size: 18px !important;
+}
+
+body.langRU .wod20 .headlineGroup {
+  font-size: 18px !important;
+}
+
+/* Tabs (top tabs on sheet) */
+body.langRU .wod20 .headlineTabs {
+  font-size: 18px !important;
+}
+
+body.langRU .wod20 .secondHeadlineTabs {
+  font-size: 18px !important;
+}
+
+/* List items and buttons in header rows */
+body.langRU .wod20 .headlineItem {
+  font-size: 20px !important;
+}
+
+body.langRU .wod20 .headlineButton {
+  font-size: 22px !important;
+}
+
+/* Very small info labels */
+body.langRU .wod20 .information-area {
+  font-size: 18px !important;
+}
+
+/* Headline for description blocks (powers, etc.) */
+body.langRU .wod20:not(.noSplatFont) .description .headlineList {
+  font-size: 18px !important;
+}
+
+/* Condition labels (Rage, Ignore Pain, etc.) */
+body.langRU .wod20 .condition-checkbox {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}

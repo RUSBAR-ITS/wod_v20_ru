@@ -1,0 +1,61 @@
+<div class="pullLeft">
+    <div class="pullLeft">
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-label">
+                {{localize "wod.combat.movement.walk"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-value">
+                {{actor.system.movement.walk}}
+            </div>
+        </div>
+
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-label">
+                {{localize "wod.combat.movement.jog"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-value">
+                {{actor.system.movement.jog}}
+            </div>
+        </div>
+
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-label">
+                {{localize "wod.combat.movement.run"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-value">
+                {{actor.system.movement.run}}
+            </div>
+        </div>
+
+        {{#if (gt actor.system.movement.fly 0)}}
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-label">
+                {{localize "wod.combat.movement.fly"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-value">
+                {{actor.system.movement.fly}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+    <div class="pullLeft">
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-jump-label">
+                {{localize "wod.combat.movement.vjump"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-jump-value">
+                {{actor.system.movement.vjump}}
+            </div>
+        </div>
+
+        <div class="clearareaBox movementBox">
+            <div class="pullLeft headlineList splatFont movement-jump-label">
+                {{localize "wod.combat.movement.hjump"}}
+            </div>
+            <div class="pullLeft headlineNormal movement-jump-value">
+                {{actor.system.movement.hjump}}
+            </div>
+        </div>
+    </div>
+</div>

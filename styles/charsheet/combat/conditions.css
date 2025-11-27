@@ -1,0 +1,32 @@
+/* Center the whole health widget (title + boxes) */
+body.langRU .wod20 .combat-bottomhealth .healthBox {
+  text-align: center;
+}
+
+/* Make the "Health" banner itself an inline block and center it */
+body.langRU .wod20 .combat-bottomhealth .healthBox
+  .sheet-banner-small.sheet-headline {
+  display: inline-block;
+  margin: 0 auto 10px;  /* 10px bottom margin like before */
+}
+
+/* Combat tab: widen the Conditions column */
+.wod20 .combat-bottomarea {
+  width: 50%;
+}
+
+/* Let each condition row use the full width of its column */
+.wod20 .condition {
+  width: 100%;
+}
+
+/* Optionально — разделить ширину чекбокса и текста */
+.wod20 .condition .condition-checkbox:first-child {
+  width: 26px;
+}
+
+.wod20 .condition .condition-checkbox:last-child {
+  width: calc(100% - 26px);
+  text-align: left;
+  padding-left: 10px;
+}
