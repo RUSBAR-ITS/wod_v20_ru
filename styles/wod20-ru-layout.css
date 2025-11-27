@@ -1,0 +1,212 @@
+/* wod20-ru-layout.css
+ * Layout extension for WoD20 character sheets when using Russian (langRU).
+ * Based on existing size tweaks for langDE/langES/langFR/langIT/langPT.
+ */
+
+/* === 1. Global actor sheet size === */
+
+body.langRU .wod-sheet:not(.minimized) {
+  min-width: 1100px;
+  width: 1100px;
+  min-height: 900px;
+}
+
+/* Inner content area where all blocks (attributes, abilities, etc.) live */
+body.langRU .wod-sheet .sheet-inner-area {
+  width: 990px;
+}
+
+/* On medium-width screens, relax the minimum width, like other wide languages */
+@media all and (max-width: 1500px) {
+  body.langRU .wod-sheet:not(.minimized) {
+    min-width: 900px;
+  }
+}
+
+/* On smaller screens, add right padding, same as DE/ES/IT/PT */
+@media all and (max-width: 1280px) {
+  body.langRU .wod-sheet .sheet-inner-area {
+    padding-right: 45px;
+  }
+}
+
+/* === 2. Attributes and abilities blocks === */
+
+/* Main ability headline width (Abilities block) */
+body.langRU .wod-sheet .ability-headlineWidth {
+  width: 60%;
+}
+
+/* Right side for supernatural abilities */
+body.langRU .wod-sheet .supernaturalAttribute.ability-headlineWidth {
+  width: 40%;
+}
+
+/* Attribute headline width (text part on the left) */
+body.langRU .attribute-headlineWidth {
+  width: 120px;
+}
+
+/* Creature sheet – attribute headline in percentages */
+body.langRU .creature .attribute-headlineWidth {
+  width: 35%;
+}
+
+/* === 3. Health (health boxes / labels) === */
+
+/* Generic health headline, used outside specific sheets */
+body.langRU .health-headlineWidth {
+  width: 140px;
+}
+
+/* Health headline on wod-sheet actor sheets */
+body.langRU .wod-sheet .health-headlineWidth {
+  width: 150px;
+}
+
+/* Changeling health and armor text tend to be especially long */
+body.langRU .changeling .health-headlineWidth {
+  width: 180px;
+}
+
+body.langRU .changeling .armor-type-width {
+  width: 270px;
+}
+
+/* Move Experience block down on the Core tab (Vampire sheet) */
+body.langRU .wod-sheet.vampire .sheet-headline.headlineGroup.splatFont[style*="margin-top: -4px"] {
+  margin-top: 21px !important;
+}
+
+/* === 4. Combat lists: weapons, armor, powers, effects, gear === */
+
+/* Name column (weapons, armor, powers, abilities, etc.) */
+body.langRU .wod20 .combat-natural-itemlist .width-abilitybox,
+body.langRU .wod20 .combat-melee-itemlist .width-abilitybox,
+body.langRU .wod20 .combat-ranged-itemlist .width-abilitybox,
+body.langRU .wod20 .combat-armor-itemlist .width-abilitybox,
+body.langRU .wod20 .power-itemlist .width-abilitybox,
+body.langRU .wod20-drag-row .width-abilitybox {
+  width: 110px;
+}
+
+/* Hunter powers: need extra space for long names */
+body.langRU .wod20.hunter .power-itemlist .width-abilitybox {
+  width: 160px;
+}
+
+/* Gear / Effects – wider description columns */
+body.langRU .wod20 .gear-itemlist .width-abilitybox,
+body.langRU .wod20 .effect-itemlist .item-row .width-mediumbox {
+  width: 200px;
+}
+
+/* Numeric "value" columns in combat and item lists */
+body.langRU .wod20 .combat-natural-itemlist .width-valuebox,
+body.langRU .wod20 .combat-melee-itemlist .width-valuebox,
+body.langRU .wod20 .combat-ranged-itemlist .width-valuebox,
+body.langRU .wod20 .combat-armor-itemlist .width-valuebox,
+body.langRU .wod20 .gear-itemlist .width-valuebox,
+body.langRU .wod20 .feature-itemlist .width-valuebox,
+body.langRU .wod20-drag-row .width-valuebox {
+  width: 80px;
+  text-align: center;
+}
+
+/* Some sheets use even wider armor value columns */
+body.langRU .wod20.demon .combat-armor-itemlist .width-valuebox,
+body.langRU .wod20.mage .combat-armor-itemlist .width-valuebox,
+body.langRU .wod20.mortal .combat-armor-itemlist .width-valuebox {
+  width: 100px;
+}
+
+/* Special "form-box" numeric field on Werewolf armor rows */
+body.langRU .wod20.werewolf .combat-armor-itemlist .width-valuebox.form-box {
+  width: 60px;
+}
+
+/* Additional small combat boxes */
+body.langRU .combat-smallBox {
+  width: 90px;
+}
+
+body.langRU .combat-concealBox {
+  width: 85px;
+}
+
+body.langRU .combat-valueBox {
+  width: 65px;
+}
+
+body.langRU .combat-valueBoxArmor {
+  width: 95px;
+}
+
+/* === 5. Powers: dice columns and rolls === */
+
+/* Dice column width in power lists */
+body.langRU .wod-sheet .power-dicebox {
+  width: 130px;
+}
+
+/* === 6. System settings (ability lists and alternative names) === */
+
+/* Ability label in system settings sidebar */
+body.langRU .settings-abilitylabel {
+  width: 115px;
+}
+
+/* Alternative ability name filler in settings */
+body.langRU .settings-ability-altnamefiller {
+  width: 110px;
+}
+
+/* === 7. Dialogs (Arete casting, comboboxes, etc.) === */
+
+/* Large label in Arete casting dialog */
+body.langRU .aretecasting-dialog .dialog-label {
+  width: 520px;
+}
+
+/* Casting type label in dialogs */
+body.langRU .dialog-casting-type-label {
+  width: 350px;
+}
+
+/* Combobox row height */
+body.langRU .comboboxRow {
+  height: 40px;
+}
+
+/* Combat tab → Armor block: custom column widths for RU
+   Columns (excluding drag handle):
+   1 = name, 2 = Bashing, 3 = Lethal, 4 = Aggravated, 5 = Dex penalty, 6 = action icons
+*/
+
+/* 1st column: armor name */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-namebox,
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-namebox {
+  width: 150px;
+}
+
+/* 2nd–4th columns: soak values */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-valuebox,
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-valuebox {
+  width: 170px;
+  text-align: center;
+}
+
+/* 5th column: Dex penalty */
+body.langRU .wod20 .headlineRow.combat-armor-itemlist .width-smallbox,
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .width-smallbox {
+  width: 130px;
+  text-align: center;
+}
+
+/* 6th column: action/icon area on the right */
+body.langRU .wod20 .item-row-area.combat-armor-itemlist .iconBox {
+  width: 100px;
+  flex: 0 0 100px;
+  max-width: 100px;
+  justify-content: flex-end;
+}

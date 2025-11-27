@@ -3,7 +3,7 @@
   "type": "module",
   "title": "World of Darkness 20th — Russian localization by RUSBAR",
   "description": "Unofficial Russian translation World of Darkness 20th edition for Foundry VTT by RUSBAR. This verison is autotranslated by neural networks and may contain errors.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -41,5 +41,13 @@
       "path": "lang/ru.json",
       "flags": {}
     }
+  ],
+
+  "styles": [
+    "styles/wod20-ru-layout.css"
+  ],
+
+  "scripts": [
+    "scripts/wod20-ru-lang.js"
   ]
 }
