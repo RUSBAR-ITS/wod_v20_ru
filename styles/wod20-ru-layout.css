@@ -39,7 +39,7 @@ body.langRU .wod-sheet .ability-headlineWidth {
 
 /* Right side for supernatural abilities */
 body.langRU .wod-sheet .supernaturalAttribute.ability-headlineWidth {
-  width: 40%;
+  width: 55%;
 }
 
 /* Attribute headline width (text part on the left) */
@@ -50,6 +50,38 @@ body.langRU .attribute-headlineWidth {
 /* Creature sheet – attribute headline in percentages */
 body.langRU .creature .attribute-headlineWidth {
   width: 35%;
+}
+
+/* === 2.1. Attribute rows – flex layout for RU === */
+
+/* Make each attribute row a flex container */
+body.langRU .attribute-rowheight.attributes {
+  display: flex;
+  align-items: center;
+}
+
+/* Inside attribute rows we do NOT want float-based layout */
+body.langRU .attribute-rowheight.attributes .pullLeft,
+body.langRU .attribute-rowheight.attributes .pullRight {
+  float: none !important;
+}
+
+/* Fixed width for attribute label (left part) */
+body.langRU .attribute-rowheight.attributes .attribute-headlineWidth {
+  flex: 0 0 150px;   /* same 150px that you already use */
+  margin-right: 8px;
+}
+
+/* Dot pool (resource-value) takes only as much space as needed */
+body.langRU .attribute-rowheight.attributes .resource-value {
+  flex: 0 0 auto;
+}
+
+/* Speciality icon block stays at the end of the row */
+body.langRU .attribute-rowheight.attributes .speciality-attribute-icon,
+body.langRU .attribute-rowheight.attributes .speciality-attribute-empty-icon {
+  flex: 0 0 auto;
+  margin-left: 8px;
 }
 
 /* === 3. Health (health boxes / labels) === */
