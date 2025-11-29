@@ -13,7 +13,7 @@ body.langRU .wod-sheet:not(.minimized) {
 
 /* Inner content area where all blocks (attributes, abilities, etc.) live */
 body.langRU .wod-sheet .sheet-inner-area {
-  width: 1290px;
+  width: 1300px;
 }
 
 /* On medium-width screens, relax the minimum width, like other wide languages */

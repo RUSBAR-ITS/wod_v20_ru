@@ -55,6 +55,10 @@ const TEMPLATE_OVERRIDES = [
     modulePath: "modules/wod_v20_ru/templates/actor/parts/stats.html"
   },
   {
+    systemPath: "systems/worldofdarkness/templates/actor/parts/settings_combat.html",
+    modulePath: "modules/wod_v20_ru/templates/actor/parts/settings_combat.html"
+  },
+  {
     systemPath: "systems/worldofdarkness/templates/actor/vampire-sheet.html",
     modulePath: "modules/wod_v20_ru/templates/actor/vampire-sheet.html"
   }

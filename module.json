@@ -61,7 +61,8 @@
     "styles/charsheet/powers/disciplines.css",
     "styles/charsheet/powers/unsorted-panel.css",
     "styles/charsheet/settings/attributes-table.css",
-    "styles/charsheet/settings/abilities-table.css"
+    "styles/charsheet/settings/abilities-table.css",
+    "styles/charsheet/settings/combat-table.css"
   ],
 
   "scripts": [

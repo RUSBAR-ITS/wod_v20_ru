@@ -21,7 +21,7 @@ body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .settings-abilit
 
 /* Filler column for alternative name (kept smaller to give more space to name) */
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .settings-ability-altnamefiller {
-  width: 150px;         /* was 125px; adjust if you later want a wider alt-name column */
+  width: 300px;         /* was 125px; adjust if you later want a wider alt-name column */
 }
 
 /* -------------------------------------------------------------------------- */
@@ -50,4 +50,24 @@ body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .row {
   line-height: 1.2;    /* normal line height for wrapped text */
   padding: 1px 0;
   align-items: center; /* vertical alignment inside flex row */
+}
+
+/* Stretch primary headers' banner to match column width 
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities
+  .sheet-banner-small .sheet-banner-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+} */
+
+/* Fix header width for primary abilities on Settings / Abilities tab
+   in dark theme: override darkmode.css (.dark-theme.wod-sheet .sheet-banner-small) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .sheet-banner-small {
+  width: 100%;      /* fill the whole ability-statArea column */
+  max-width: 33.333%;  /* cancel max-width: 250px from darkmode.css */
+  display: block;   /* full-width block inside the float */
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 10px;
 }
