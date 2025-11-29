@@ -1,0 +1,35 @@
+/* Discipline tab: column widths for disciplines, paths, powers and rituals */
+
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .item-row-area.mainpower-row .width-namebox {
+  /* Main discipline and discipline path names */
+  width: 300px;
+}
+
+/* Name column: discipline powers, path powers, combo disciplines, rituals */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-itemlist .width-namebox,
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .unsorted-area .width-namebox {
+  width: 300px;
+}
+
+/* Dice columns (attribute / ability) */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-itemlist .width-abilitybox,
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-dicebox {
+  width: 200px;
+}
+
+/* Small numeric columns: difficulty, level, etc. */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-itemlist .width-smallbox,
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-valueBox {
+  width: 150px;
+}
+
+/* Optional: icon column (chat / edit / delete) fine-tuning */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-row .power-iconbox {
+  margin-left: 8px;
+}
+
+/* Extra space between drag handle and power name on Discipline tab */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .dragrow .width-iconbox,
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .dragrow .width-iconbox-empty {
+  margin-right: 12px;
+}

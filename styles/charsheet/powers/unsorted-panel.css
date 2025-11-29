@@ -1,0 +1,21 @@
+/* Unsorted powers info panel on Discipline tab */
+
+body.langRU .wod20 .sheet-area.unsorted-area .headlineNormal.info-box {
+  /* Dark background and bright warning-like text */
+  background-color: #101010;  /* darker than the default sheet background */
+  color: #ffcc55;             /* warning yellow; change to #ff5555 for error red */
+  border-color: #ffcc55;
+  border-width: 1px;
+  border-style: solid;
+
+  /* Layout and readability */
+  padding: 8px 10px;
+  border-radius: 4px;
+  max-width: 420px;
+  margin: 6px auto 4px auto;  /* small vertical spacing, centered horizontally */
+  line-height: 1.35;
+
+  /* In your setup 700 = Regular (normal text), 400 = Bold */
+  font-weight: 700;
+}
+

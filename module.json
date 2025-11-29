@@ -56,7 +56,12 @@
     "styles/charsheet/combat/ranged.css",
     "styles/charsheet/combat/conditions.css",
     "styles/charsheet/combat/movement.css",
-    "styles/charsheet/main/stats.css"
+    "styles/charsheet/main/stats.css",
+    "styles/charsheet/main/info-cells.css",
+    "styles/charsheet/powers/disciplines.css",
+    "styles/charsheet/powers/unsorted-panel.css",
+    "styles/charsheet/settings/attributes-table.css",
+    "styles/charsheet/settings/abilities-table.css"
   ],
 
   "scripts": [

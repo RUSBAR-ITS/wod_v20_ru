@@ -1,0 +1,53 @@
+/* ========================================================================== */
+/* WoD20 RU – Settings / Abilities tab                                        */
+/* Primary + secondary abilities layout and text wrapping.                    */
+/* ========================================================================== */
+
+/* Three main columns: Talents / Skills / Knowledges (headers + bodies) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .ability-statArea {
+  width: 33.333%;   /* make sure headers and ability lists share the same width */
+}
+
+/* -------------------------------------------------------------------------- */
+/* PRIMARY ABILITIES (config.talents / skills / knowledges)                   */
+/* -------------------------------------------------------------------------- */
+
+/* Name column for primary abilities */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .settings-abilitylabel {
+  width: 300px;        /* was 90px in core; tune this for RU labels */
+  white-space: normal; /* allow wrapping instead of cutting text */
+  word-break: break-word;
+}
+
+/* Filler column for alternative name (kept smaller to give more space to name) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .settings-ability-altnamefiller {
+  width: 150px;         /* was 125px; adjust if you later want a wider alt-name column */
+}
+
+/* -------------------------------------------------------------------------- */
+/* SECONDARY ABILITIES (actor.system.listdata.secondary_*)                    */
+/* Core templates use inline style="width: 175px" for these labels;           */
+/* here we normalize them to match primary abilities and enable wrapping.     */
+/* -------------------------------------------------------------------------- */
+
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities
+  .ability-statArea .pullLeft.headlineNormal[style*="width: 175px"],
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities
+  .ability-statArea .headlineNormal[style*="width: 175px"] {
+  width: 300px !important;   /* match settings-abilitylabel width */
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* -------------------------------------------------------------------------- */
+/* ROW HEIGHT / MULTI-LINE SUPPORT                                            */
+/* -------------------------------------------------------------------------- */
+
+/* Rows in abilities tables (primary + secondary) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.abilities .row {
+  height: auto;        /* allow multi-line rows */
+  min-height: 22px;    /* base height for short names */
+  line-height: 1.2;    /* normal line height for wrapped text */
+  padding: 1px 0;
+  align-items: center; /* vertical alignment inside flex row */
+}

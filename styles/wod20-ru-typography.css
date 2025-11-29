@@ -46,14 +46,9 @@ body.langRU .wod20 textarea {
   font-size: 14px !important;
 }
 
-/* Info values (small stats in sheet header) */
-body.langRU .wod20 input.sheet-infoValues {
-  font-size: 14px !important;
-}
-
 /* Main sheet headline (big banner title on sheet) */
 body.langRU .wod-sheet .sheet-headline {
-  font-size: 22px !important;
+  font-size: 28px !important;
 }
 
 /* Smaller headline text on sheet (section titles) */
@@ -107,4 +102,84 @@ body.langRU .wod20 .condition-checkbox {
   font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
   font-size: 18px;
   letter-spacing: 0.01em;
+}
+
+/* Discipline tab: headers "Description" / "System" in inline description block */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .description .headlineList {
+  font-size: 22px !important;   /* <-- header font size ("Описание", "Система") */
+  font-weight: 400;
+  margin: 0 0 4px 0;
+}
+
+/* Discipline tab: description/system text paragraphs */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .description .tooltipText {
+  font-size: 16px !important;   /* <-- base font size for description text */
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* If you want even more direct control over <p> elements */
+body.langRU .wod20.wod-sheet.vampire .tab.discipline .description .tooltipText p {
+  font-size: 16px !important;   /* <-- paragraph font size */
+  margin: 0 0 4px 0;
+  font-weight: 700;
+}
+
+/* === WoD20 RU: default text styling for rich-text fields === */
+/* Applies to ProseMirror editors (Gear, Appearance, Biography, Roleplaying tips, etc.)
+   and to the read-only Gear view when the sheet is locked. */
+
+body.langRU .wod20.wod-sheet .editor-content.ProseMirror {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif; 
+  font-size: 14px;        /* adjust to 13/15/16 if needed */
+  font-weight: 700;       /* In this module: 700 = Regular, 400 = Bold */
+  line-height: 0.75;
+}
+
+/* Read-only Gear text (when the sheet is locked and editor is not shown) */
+body.langRU .wod20.wod-sheet .sheet-gearArea.headlineNormal.textarea {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 14px;        /* keep in sync with the editor above */
+  font-weight: 700;       /* regular weight in your font mapping */
+  line-height: 0.75;
+}
+
+/* Read-only Bio tab text (Appearance, Background, Roleplay tips) when locked */
+body.langRU .wod20.wod-sheet .tab.bio .headlineNormal.textarea {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 14px;        /* same as editors, for consistent look */
+  font-weight: 700;       /* regular (non-bold) in your setup */
+  line-height: 0.75;
+}
+
+/* === Bio header fields (Nature, Demeanor, Concept, Clan, etc.) === */
+/* Text inside the input/select boxes */
+body.langRU .wod20 input.sheet-infoValues,
+body.langRU .wod20 select.sheet-infoValues {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 18px;        /* base size for values inside the boxes */
+  font-weight: 700;       /* in your mapping: 700 = Regular (non-bold) */
+  color: #f0f0f0;         /* brighter than default grey */
+}
+
+/* Floating label when it sits inside the box (empty field state) */
+body.langRU .wod20 .floating-label-group .floating-label {
+  font-family: "PT Sans Narrow RU", var(--font-primary), system-ui, sans-serif;
+  font-size: 16px;        /* same as field text or slightly smaller (e.g. 13px) */
+  font-weight: 700;
+  opacity: 0.7;           /* a bit more visible than default 0.5 */
+  color: #cccccc;         /* tune label color here if needed */
+}
+
+/* Floating label when field is focused or has a value (small caption above) */
+body.langRU .wod20 .floating-label-group input:focus ~ .floating-label,
+body.langRU .wod20 .floating-label-group input:disabled ~ .floating-label,
+body.langRU .wod20 .floating-label-group input:not(:focus):valid ~ .floating-label,
+body.langRU .wod20 .floating-label-group select:focus ~ .floating-label,
+body.langRU .wod20 .floating-label-group select:disabled ~ .floating-label,
+body.langRU .wod20 .floating-label-group select:not(:focus):valid ~ .floating-label {
+  font-size: 12px;        /* caption size above the box */
+  font-weight: 700;
+  opacity: 1;             /* fully visible caption */
+  /* position (top/left) is inherited from system CSS; no need to repeat it */
 }

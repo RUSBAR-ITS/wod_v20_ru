@@ -1,0 +1,35 @@
+/* ========================================================================== */
+/* WoD20 RU – Settings / Attributes tab                                       */
+/* Layout for the first block (attributes table: Value / Bonus / Total / Max) */
+/* ========================================================================== */
+
+/* Label column (attribute name) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .settings-leftwidth {
+  width: 180px;        /* adjust to make the name column wider/narrower */
+}
+
+/* Numeric columns: Value, Bonus, Total, Max (header + rows) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .numberBox {
+  width: 100px;         /* width of each numeric column */
+  min-width: 100px;
+  text-align: center;
+}
+
+/* Row height: header row + attribute rows (cells behave like a table) */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .clearareaBox > label.settings-leftwidth,
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .clearareaBox > .sheet-infoValues.numberBox,
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .clearareaBox > .headlineNormal.numberBox {
+  height: 26px;        /* overall cell height */
+  line-height: 26px;   /* vertical centering for text in <div>/<label> */
+}
+
+/* Inputs in the numeric cells: keep them inside the row height */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .clearareaBox input.sheet-infoValues.numberBox {
+  padding: 2px 4px;
+  box-sizing: border-box;
+}
+
+/* Optional: small vertical spacing between each attribute row */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.attributes .clearareaBox + .clearareaBox {
+  margin-top: 2px;
+}
