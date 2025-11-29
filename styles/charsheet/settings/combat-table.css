@@ -3,7 +3,7 @@
  * Column widths for Soak, Initiative and Health tables
  * ========================================================== */
 
-/* Make numeric inputs respect cell width */
+/* Numeric inputs should respect cell width */
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
   input.sheet-infoValues.numberBox {
   box-sizing: border-box;
@@ -11,41 +11,46 @@ body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
 
 /* ------------------------------------------------------------
  * Block 1: Soak
- *   col-1: Damage type name
- *   col-2: Total soak
- *   col-3: Bonus
- *   col-4: Can soak (yes/no)
+ *   soak-col-1: damage type name
+ *   soak-col-2: total soak
+ *   soak-col-3: bonus
+ *   soak-col-4: can soak (yes/no)
  * ---------------------------------------------------------- */
 
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .soak-col-1 {
-  width: 200px;     /* damage type name */
+  width: 180px;
 }
 
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .soak-col-2 {
-  width: 50px !important;   /* total soak */
+  width: 50px !important;
+  min-width: 50px;
   text-align: center;
 }
 
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .soak-col-3 {
-  width: 80px !important;   /* bonus */
+  width: 80px !important;
+  min-width: 80px;
   text-align: center;
 }
 
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .soak-col-4 {
-  width: 150px;    /* yes / no */
+  width: 180px;
   text-align: center;
 }
 
 /* ------------------------------------------------------------
  * Block 2: Initiative
- *   col-1: Base value
- *   col-2: Bonus
- *   col-3: Total
+ *   init-col-1: base value
+ *   init-col-2: bonus
+ *   init-col-3: total
  * ---------------------------------------------------------- */
 
-body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .init-col-1,
-body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .init-col-2,
-body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .init-col-3 {
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
+  .init-col-1,
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
+  .init-col-2,
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
+  .init-col-3 {
   width: 80px !important;
   min-width: 80px;
   text-align: center;
@@ -53,14 +58,15 @@ body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .init-col-3 {
 
 /* ------------------------------------------------------------
  * Block 3: Health
- *   col-1: Health level name
- *   col-2: Value
- *   col-3: Total
- *   col-4: Penalty
+ *   health-col-1: health level name
+ *   health-col-2: value
+ *   health-col-3: total
+ *   health-col-4: penalty
  * ---------------------------------------------------------- */
 
-body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat .health-col-1 {
-  width: 180px;   /* name column */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat
+  .health-col-1 {
+  width: 150px;
 }
 
 body.langRU .wod20.wod-sheet .sheet-setting-body .tab.combat

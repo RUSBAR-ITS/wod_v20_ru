@@ -1,0 +1,41 @@
+/* ========================================================================== */
+/* WoD20 RU – Settings / Sheet tab – "Graphics" section                       */
+/* Controls column widths for the small two-row table                         */
+/* ========================================================================== */
+
+/* Text column ("Sheet font", "Dice setup") */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.sheetsetting
+  .sheet-area.flex-columns:last-of-type
+  .clearareaBox > .pullLeft.headlineNormal.settings-leftwidth {
+  width: 260px;          /* make text wide enough for Russian labels */
+}
+
+/* Second column, row 1: toggle "Use special sheet font" */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.sheetsetting
+  .sheet-area.flex-columns:last-of-type
+  .clearareaBox > .pullLeft.switch.settings-leftwidth {
+  width: 140px;          /* width of the Yes/No switch cell */
+  text-align: center;
+}
+
+/* Second column, row 2: dice style select */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.sheetsetting
+  .sheet-area.flex-columns:last-of-type
+  .clearareaBox > .pullLeft.settings-verticalcenter.bold {
+  width: 220px;          /* container for the <select> */
+}
+
+/* Make the dice-style <select> fill its cell nicely */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.sheetsetting
+  .sheet-area.flex-columns:last-of-type
+  .clearareaBox select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Optional: small vertical spacing between the two rows */
+body.langRU .wod20.wod-sheet .sheet-setting-body .tab.sheetsetting
+  .sheet-area.flex-columns:last-of-type
+  .clearareaBox + .clearareaBox {
+  margin-top: 4px;
+}
