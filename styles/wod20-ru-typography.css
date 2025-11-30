@@ -183,3 +183,72 @@ body.langRU .wod20 .floating-label-group select:not(:focus):valid ~ .floating-la
   opacity: 1;             /* fully visible caption */
   /* position (top/left) is inherited from system CSS; no need to repeat it */
 }
+
+/* === WoD20 RU: item checkbox titles & options (weapons, armor, etc.) === */
+
+/* Generic titles such as "TWO-HANDED", "NATURAL WEAPON", "MODE", "FORMS" */
+body.langRU .wod20.wod-item .dialog-area .infobox > label.headlineItem.headlineBio {
+  /* typography */
+  font-size: 18px;
+  font-weight: 700;
+  color: #f4f4f4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  /* layout: title + checkbox on the same line */
+  float: none;
+  width: auto;
+  display: inline-block;
+  margin: 4px 8px 4px 0;
+  vertical-align: middle;
+}
+
+/* Checkbox that is placed next to the title (two-handed, natural, rollable, etc.) */
+body.langRU .wod20.wod-item .dialog-area .infobox > input[type="checkbox"] {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 4px 0;
+}
+
+/* Clean up infobox so it does not inherit old floats */
+body.langRU .wod20.wod-item .dialog-area .infobox {
+  clear: both;
+}
+
+/* === Special checkbox groups that must be vertical lists,
+     each row as "[ ] Label" on a single line === */
+
+/* Fallback: small utility checkboxes inside item sheets without a headline label
+   are also aligned vertically */
+body.langRU .wod20.wod-item .dialog-area .infobox:not(:has(> label.headlineItem.headlineBio))
+  > input[type="checkbox"] {
+  display: block;
+  margin: 2px 0;
+}
+
+/* === WoD20 RU: checkbox lists for item fire modes and armor forms === */
+
+body.langRU .wod20.wod-item .wod20-ru-checkbox-list {
+  margin-top: 4px;
+}
+
+/* One checkbox + label pair per row */
+body.langRU .wod20.wod-item label.wod20-ru-checkbox-row {
+  display: block;
+  margin: 2px 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #f4f4f4;
+}
+
+body.langRU .wod20.wod-item label.wod20-ru-checkbox-row > input[type="checkbox"] {
+  display: inline-block;
+  margin-right: 6px;
+  margin-left: 0;
+  vertical-align: middle;
+}
+
+body.langRU .wod20.wod-item label.wod20-ru-checkbox-row > span {
+  display: inline-block;
+  vertical-align: middle;
+}

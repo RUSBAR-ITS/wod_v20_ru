@@ -61,6 +61,14 @@ const TEMPLATE_OVERRIDES = [
   {
     systemPath: "systems/worldofdarkness/templates/actor/vampire-sheet.html",
     modulePath: "modules/wod_v20_ru/templates/actor/vampire-sheet.html"
+  },
+  {
+    systemPath: "systems/worldofdarkness/templates/sheets/armor-sheet.html",
+    modulePath: "modules/wod_v20_ru/templates/sheets/armor-sheet.html"
+  },
+  {
+    systemPath: "systems/worldofdarkness/templates/sheets/rangedweapon-sheet.html",
+    modulePath: "modules/wod_v20_ru/templates/sheets/rangedweapon-sheet.html"
   }
 
   // Add more overrides here as needed, for example:

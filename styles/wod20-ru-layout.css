@@ -209,3 +209,30 @@ body.langRU .dialog-casting-type-label {
 body.langRU .comboboxRow {
   height: 40px;
 }
+
+/* === WoD20 RU: fire mode buttons in ranged weapon attack dialog === */
+/* Grow vertically for multi-line text and be slightly wider than default */
+
+body.langRU .wod20 .dialog-mode-button {
+  width: calc(20% + 10px);  /* base width (20%) + ~5px extra for each button */
+  height: auto;            /* do not clip multi-line text */
+  min-height: 34px;        /* keep original baseline height */
+  margin-bottom: 5px;      /* same vertical spacing as system default */
+  padding: 4px 8px;
+  line-height: 1.2;
+  white-space: normal;     /* allow wrapping inside the button */
+}
+
+/* === WoD20 RU: align dialog frames and fire-mode container === */
+
+/* Center all dialog-area frames inside gray dialog background */
+body.langRU .wod-dialog .dialog-area {
+  margin-left: 0px;   /* same as margin-right from system CSS */
+  margin-right: 0px;  /* keep original value, now symmetric */
+}
+
+/* Fire-mode button container:
+   remove extra margin from .infobox so its frame matches other blocks */
+body.langRU .wod-dialog .infobox.centerText.dialog-area {
+  margin: 0px;           /* override .wod-dialog .infobox { margin: 5px; } */
+}
