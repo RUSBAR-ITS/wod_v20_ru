@@ -773,7 +773,7 @@
                 "earthbound": "Прикованные к земле"
             }
         },
-"attributes": {
+        "attributes": {
 			"attributes": "Характеристики",
 			"physical": "Физические",
 			"social": "Социальные",
@@ -1959,5 +1959,21 @@
                 "lostbreeds": "Потерянные породы"
             }
         }
-	}
+	},
+    "WOD20RU": {
+        "FateEnabledName": "Включить систему Судьбы",
+        "FateEnabledHint": "Включить параметр Судьбы для персонажей-вампиров",
+        "FateDiceColorName": "Цвет костей Судьбы",
+        "FateDiceColorHint": "Цвет костей Судьбы при бросках",
+        "FateMaxPointsName": "Максимум очков Судьбы",
+        "FateMaxPointsHint": "Максимальное количество очков Судьбы у персонажа (по умолчанию: 10)",
+        "ColorDarkRed": "Тёмно-красный",
+        "ColorDarkBlue": "Тёмно-синий",
+        "ColorDarkGreen": "Тёмно-зелёный",
+        "ColorIndigo": "Индиго",
+        "ColorGold": "Золотой",
+        "Fate": "Судьба",
+        "FateAvailable": "Судьба доступна",
+        "FateUnavailable": "Судьба недоступна"
+    }
 }

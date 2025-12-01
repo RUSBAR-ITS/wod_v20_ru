@@ -1,8 +1,8 @@
 {
   "id": "wod_v20_ru",
-  "title": "World of Darkness 20th — Russian localization by RUSBAR",
-  "description": "Unofficial Russian translation World of Darkness 20th edition for Foundry VTT by RUSBAR. This verison is autotranslated by neural networks and may contain errors.",
-  "version": "0.6.0",
+  "title": "World of Darkness 20th — Russian localization by RUSBAR + Fate",
+  "description": "Unofficial Russian translation World of Darkness 20th edition for Foundry VTT by RUSBAR with Fate system expansion. This version is autotranslated by neural networks and may contain errors.",
+  "version": "0.7.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -39,11 +39,18 @@
       "name": "Russian",
       "path": "lang/ru.json",
       "flags": {}
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
     }
   ],
 
   "esmodules": [
-    "scripts/wod20-movement-override.js"
+    "scripts/wod20-movement-override.js",
+    "scripts/settings.js"
   ],
 
   "styles": [
@@ -67,5 +74,10 @@
 
   "scripts": [
     "scripts/wod20-ru-lang.js"
-  ]
+  ],
+
+  "socket": false,
+  "flags": {
+    "allowBugReporter": true
+  }
 }
