@@ -1,6 +1,5 @@
 {
   "id": "wod_v20_ru",
-  "type": "module",
   "title": "World of Darkness 20th — Russian localization by RUSBAR",
   "description": "Unofficial Russian translation World of Darkness 20th edition for Foundry VTT by RUSBAR. This verison is autotranslated by neural networks and may contain errors.",
   "version": "0.6.0",
