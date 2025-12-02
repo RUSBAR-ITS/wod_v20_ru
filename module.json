@@ -50,7 +50,9 @@
 
   "esmodules": [
     "scripts/wod20-movement-override.js",
-    "scripts/settings.js"
+    "scripts/settings.js",
+    "scripts/fate-data.js",
+    "scripts/hooks.js"
   ],
 
   "styles": [
@@ -69,7 +71,8 @@
     "styles/charsheet/settings/attributes-table.css",
     "styles/charsheet/settings/abilities-table.css",
     "styles/charsheet/settings/combat-table.css",
-    "styles/charsheet/settings/sheet.css"
+    "styles/charsheet/settings/sheet.css",
+    "styles/fate.css"
   ],
 
   "scripts": [

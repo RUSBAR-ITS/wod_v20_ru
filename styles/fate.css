@@ -1,0 +1,72 @@
+/**
+ * Fate Styles - Exact copy of Willpower from WoD20 system
+ */
+
+/* Main container - identical to willpower */
+.resource.fate {
+    flex: 0 0 20%;
+    margin: 0 5px;
+}
+
+.resource.fate .resource-label {
+    flex: 0 0 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Modesto Condensed", "Palatino Linotype", serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #4b4a44;
+    text-align: center;
+    border-bottom: 1px solid #782e22;
+}
+
+.resource.fate .resource-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+/* Dots - identical to willpower-dot */
+.fate-dot {
+    width: 18px;
+    height: 18px;
+    margin: 0 2px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
+
+.fate-dot.filled {
+    background: #000;
+}
+
+/* Boxes - identical to willpower-box */
+.fate-box {
+    width: 18px;
+    height: 18px;
+    margin: 0 2px;
+    border: 1px solid #000;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+}
+
+.fate-box.filled::before {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Hover effects */
+.fate-dot:hover,
+.fate-box:hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,14 @@
+<!-- Fate Section - Identical to Willpower -->
+<div class="resource fate" data-resource="fate">
+    <div class="resource-label">
+        <span>{{localize "WOD20RU.Fate"}}</span>
+    </div>
+    <div class="resource-content">
+        {{#each system.fate.dots as |dot i|}}
+        <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
+        {{/each}}
+        {{#each system.fate.boxes as |box i|}}
+        <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
+        {{/each}}
+    </div>
+</div>
