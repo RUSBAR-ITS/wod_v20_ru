@@ -75,23 +75,23 @@
 									</div>
 
 									<!-- Fate Section - Added after willpower -->
-									{{#if system.fate}}
+									{{#if actor.system.fate}}
 									<div style="border: 2px solid red; padding: 10px; margin-top: 10px;">
 									    <div style="text-align: center; font-weight: bold; color: red;">FATE DEBUG</div>
 									    <div>Fate exists: {{system.fate}}</div>
-									    <div>Value: {{system.fate.value}}, Used: {{system.fate.used}}</div>
+									    <div>Value: {{actor.system.fate.value}}, Used: {{actor.system.fate.used}}</div>
 									    <div class="resource fate" data-resource="fate" style="margin-top: 10px;">
 									        <div class="resource-label">
 									            <span>{{localize "WOD20RU.Fate"}}</span>
 									        </div>
 									        <div class="resource-content">
 									            <div class="fate-dots">
-									                {{#each system.fate.dots as |dot i|}}
+									                {{#each actor.system.fate.dots as |dot i|}}
 									                <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
 									                {{/each}}
 									            </div>
 									            <div class="fate-boxes">
-									                {{#each system.fate.boxes as |box i|}}
+									                {{#each actor.system.fate.boxes as |box i|}}
 									                <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
 									                {{/each}}
 									            </div>
@@ -149,23 +149,23 @@
 									{{{getGetStatArea actor actor.system.advantages.willpower "willpower" true true true}}}
 
 									<!-- Fate Section - Added after willpower -->
-									{{#if system.fate}}
+									{{#if actor.system.fate}}
 									<div style="border: 2px solid red; padding: 10px; margin-top: 10px;">
 									    <div style="text-align: center; font-weight: bold; color: red;">FATE DEBUG</div>
 									    <div>Fate exists: {{system.fate}}</div>
-									    <div>Value: {{system.fate.value}}, Used: {{system.fate.used}}</div>
+									    <div>Value: {{actor.system.fate.value}}, Used: {{actor.system.fate.used}}</div>
 									    <div class="resource fate" data-resource="fate" style="margin-top: 10px;">
 									        <div class="resource-label">
 									            <span>{{localize "WOD20RU.Fate"}}</span>
 									        </div>
 									        <div class="resource-content">
 									            <div class="fate-dots">
-									                {{#each system.fate.dots as |dot i|}}
+									                {{#each actor.system.fate.dots as |dot i|}}
 									                <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
 									                {{/each}}
 									            </div>
 									            <div class="fate-boxes">
-									                {{#each system.fate.boxes as |box i|}}
+									                {{#each actor.system.fate.boxes as |box i|}}
 									                <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
 									                {{/each}}
 									            </div>
