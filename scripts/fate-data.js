@@ -65,54 +65,45 @@ export class FateData {
     }
 
     /**
-     * Prepare Fate data for template (like willpower)
+     * Prepare Fate dots for template
      */
-    static prepareFateForTemplate(fateData) {
-        console.log(`Fate Data | Preparing Fate data for template:`, fateData);
-        
-        if (!fateData) {
-            console.log(`Fate Data | No Fate data provided`);
-            return null;
-        }
+    static prepareFateDots(fateData) {
+        if (!fateData) return [];
         
         const value = fateData.value || 0;
-        const used = fateData.used || 0;
         const max = fateData.max || 10;
         
-        console.log(`Fate Data | value=${value}, used=${used}, max=${max}`);
-        
-        // Prepare dots array (like willpower.dots) - IMPORTANT: 0-indexed!
         const dots = [];
         for (let i = 0; i < max; i++) {
             dots.push({
                 cssClass: i < value ? "filled" : "",
-                index: i,  // 0-based index
+                index: i,
                 type: "dots"
             });
         }
         
-        // Prepare boxes array (like willpower.boxes) - IMPORTANT: 0-indexed!
+        return dots;
+    }
+
+    /**
+     * Prepare Fate boxes for template
+     */
+    static prepareFateBoxes(fateData) {
+        if (!fateData) return [];
+        
+        const used = fateData.used || 0;
+        const max = fateData.max || 10;
+        
         const boxes = [];
         for (let i = 0; i < max; i++) {
             boxes.push({
                 cssClass: i < used ? "filled" : "",
-                index: i,  // 0-based index
+                index: i,
                 type: "boxes"
             });
         }
         
-        const result = {
-            value: value,
-            used: used,
-            max: max,
-            dots: dots,
-            boxes: boxes
-        };
-        
-        console.log(`Fate Data | Prepared data:`, result);
-        console.log(`Fate Data | Dots array length: ${dots.length}`);
-        console.log(`Fate Data | Boxes array length: ${boxes.length}`);
-        return result;
+        return boxes;
     }
 
     /**
@@ -135,7 +126,6 @@ export class FateData {
         try {
             if (type === "dots") {
                 // Click on dot - set value
-                // Note: index is 0-based from template, value is 1-based
                 const newValue = (index === currentValue - 1) ? index : index + 1;
                 console.log(`Fate Data | Setting value to: ${newValue}`);
                 
@@ -152,7 +142,6 @@ export class FateData {
                 }
             } else if (type === "boxes") {
                 // Click on box - set used
-                // Note: index is 0-based from template, used is 1-based
                 let newUsed = (index === currentUsed - 1) ? index : index + 1;
                 // Cannot exceed value
                 newUsed = Math.min(newUsed, currentValue);

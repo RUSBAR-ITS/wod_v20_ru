@@ -77,25 +77,25 @@
 									<!-- Fate Section - Added after willpower -->
 									{{#if (isFateEnabled)}}
 									{{#if actor.system.fate}}
-									{{#with (prepareFate actor.system.fate) as |fate|}}
-									<div class="resource fate" data-resource="fate" style="margin-top: 10px;">
-									    <h3 class="resource-label">
-									        <span>Fate</span>
-									    </h3>
+									<div class="resource fate" data-resource="fate">
+									    <div class="sheet-headline sheet-banner-small pointer" data-roll="fate">
+									        <span class="sheet-banner-text">{{localize 'WOD20RU.Fate'}}</span>
+									    </div>
 									    <div class="resource-content">
 									        <div class="fate-dots">
-									            {{#each fate.dots as |dot i|}}
-									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
+									            {{#each (prepareFateDots actor.system.fate) as |dot i|}}
+									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="dots" 
+									                  title="{{localize 'WOD20RU.FateRollTooltip'}}"></span>
 									            {{/each}}
 									        </div>
 									        <div class="fate-boxes">
-									            {{#each fate.boxes as |box i|}}
-									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
+									            {{#each (prepareFateBoxes actor.system.fate) as |box i|}}
+									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="boxes" 
+									                  title="{{localize 'WOD20RU.FateRollTooltip'}}"></span>
 									            {{/each}}
 									        </div>
 									    </div>
 									</div>
-									{{/with}}
 									{{/if}}
 									{{/if}}
 
@@ -145,28 +145,27 @@
 									<!-- Fate Section - Added after willpower -->
 									{{#if (isFateEnabled)}}
 									{{#if actor.system.fate}}
-									{{#with (prepareFate actor.system.fate) as |fate|}}
-									<div class="resource fate" data-resource="fate" style="margin-top: 10px;">
-									    <h3 class="resource-label">
-									        <span>Fate</span>
-									    </h3>
+									<div class="resource fate" data-resource="fate">
+									    <div class="sheet-headline sheet-banner-small pointer" data-roll="fate">
+									        <span class="sheet-banner-text">{{localize 'WOD20RU.Fate'}}</span>
+									    </div>
 									    <div class="resource-content">
 									        <div class="fate-dots">
-									            {{#each fate.dots as |dot i|}}
-									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
+									            {{#each (prepareFateDots actor.system.fate) as |dot i|}}
+									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="dots" 
+									                  title="{{localize 'WOD20RU.FateRollTooltip'}}"></span>
 									            {{/each}}
 									        </div>
 									        <div class="fate-boxes">
-									            {{#each fate.boxes as |box i|}}
-									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
+									            {{#each (prepareFateBoxes actor.system.fate) as |box i|}}
+									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="boxes" 
+									                  title="{{localize 'WOD20RU.FateRollTooltip'}}"></span>
 									            {{/each}}
 									        </div>
 									    </div>
 									</div>
-									{{/with}}
 									{{/if}}
 									{{/if}}
-
 								</div>
 
 							{{/if}}

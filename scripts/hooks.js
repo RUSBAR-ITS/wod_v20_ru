@@ -6,6 +6,7 @@ console.log("Fate Hooks | Loading module");
 
 import { isFateEnabled } from "./settings.js";
 import { FateData } from "./fate-data.js";
+import { FateRollDialog } from "./fate-roll-dialog.js";
 
 // Initialize immediately when module loads
 console.log("Fate Hooks | Initializing immediately");
@@ -20,16 +21,24 @@ if (game.actors) {
 function initializeHooks() {
     console.log("Fate Hooks | Initializing hooks");
     
-    // Register Handlebars helper
-    console.log("Fate Hooks | Registering Handlebars helper");
-    Handlebars.registerHelper('prepareFate', function(fateData) {
-        if (!fateData) return null;
-        return FateData.prepareFateForTemplate(fateData);
-    });
+    // Register Handlebars helpers
+    console.log("Fate Hooks | Registering Handlebars helpers");
     
     // Helper to check if Fate is enabled
     Handlebars.registerHelper('isFateEnabled', function() {
         return isFateEnabled();
+    });
+    
+    // Helper to prepare Fate dots for template
+    Handlebars.registerHelper('prepareFateDots', function(fateData) {
+        if (!fateData) return [];
+        return FateData.prepareFateDots(fateData);
+    });
+    
+    // Helper to prepare Fate boxes for template
+    Handlebars.registerHelper('prepareFateBoxes', function(fateData) {
+        if (!fateData) return [];
+        return FateData.prepareFateBoxes(fateData);
     });
     
     // Initialize Fate data for all existing actors when game is ready
@@ -66,6 +75,30 @@ function initializeHooks() {
             
             await FateData.handleFateClick(actor, index, type);
             app.render(false);
+        });
+        
+        // Add click handler for Fate banner roll
+        html.on('click', '[data-roll="fate"]', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            console.log(`Fate Hooks | Click on Fate banner roll for: ${actor.name}`);
+            
+            // Check if Fate can be used (filled boxes < 10)
+            const fateData = FateData.getFateData(actor);
+            if (!fateData) return;
+            
+            const used = fateData.used || 0;
+            const max = fateData.max || 10;
+            
+            if (used >= max) {
+                ui.notifications.warn(game.i18n.localize("WOD20RU.FateRollMaxUsed"));
+                return;
+            }
+            
+            // Show Fate roll dialog
+            const dialog = new FateRollDialog(actor, app);
+            dialog.render(true);
         });
     });
     

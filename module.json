@@ -52,6 +52,7 @@
     "scripts/wod20-movement-override.js",
     "scripts/settings.js",
     "scripts/fate-data.js",
+    "scripts/fate-roll-dialog.js",
     "scripts/hooks.js"
   ],
 

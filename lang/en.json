@@ -1,18 +1,18 @@
 {
   "WOD20RU": {
-    "FateEnabledName": "Enable Fate System",
-    "FateEnabledHint": "Enable the Fate parameter for vampire characters",
-    "FateDiceColorName": "Fate Dice Color",
-    "FateDiceColorHint": "Color for Fate dice in rolls",
-    "FateMaxPointsName": "Maximum Fate Points",
-    "FateMaxPointsHint": "Maximum number of Fate points a character can have (default: 10)",
-    "ColorDarkRed": "Dark Red",
-    "ColorDarkBlue": "Dark Blue",
-    "ColorDarkGreen": "Dark Green",
-    "ColorIndigo": "Indigo",
-    "ColorGold": "Gold",
     "Fate": "Fate",
-    "FateAvailable": "Fate Available",
-    "FateUnavailable": "Fate Unavailable"
+    "FateRollTooltip": "Click to change value",
+    "FateRollDescription": "Fate roll adds 10 additional dice of a different color. 10s and 1s are counted separately to determine fate success/failure.",
+    "FateRollCurrentStatus": "Current Status",
+    "FateRollUsed": "used",
+    "FateRollWillRoll": "Will roll",
+    "FateRollDice": "Fate dice",
+    "FateRollMaxUsedWarning": "Fate is fully used!",
+    "FateRollRolled": "Fate rolled for {name} ({dice} dice)",
+    "FateRollMaxUsed": "Fate is fully used!",
+    "FateRollError": "Error rolling Fate",
+    "FateRollButton": "Roll Fate",
+    "FateRoll": "Fate Roll",
+    "Cancel": "Cancel"
   }
 }

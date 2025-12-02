@@ -1961,19 +1961,19 @@
         }
 	},
     "WOD20RU": {
-        "FateEnabledName": "Включить систему Судьбы",
-        "FateEnabledHint": "Включить параметр Судьбы для персонажей-вампиров",
-        "FateDiceColorName": "Цвет костей Судьбы",
-        "FateDiceColorHint": "Цвет костей Судьбы при бросках",
-        "FateMaxPointsName": "Максимум очков Судьбы",
-        "FateMaxPointsHint": "Максимальное количество очков Судьбы у персонажа (по умолчанию: 10)",
-        "ColorDarkRed": "Тёмно-красный",
-        "ColorDarkBlue": "Тёмно-синий",
-        "ColorDarkGreen": "Тёмно-зелёный",
-        "ColorIndigo": "Индиго",
-        "ColorGold": "Золотой",
         "Fate": "Судьба",
-        "FateAvailable": "Судьба доступна",
-        "FateUnavailable": "Судьба недоступна"
+        "FateRollTooltip": "Кликните, чтобы изменить значение",
+        "FateRollDescription": "Бросок Судьбы добавляет 10 дополнительных дайсов отдельного цвета к броску. 10 и 1 считаются отдельно для определения успеха/провала судьбы.",
+        "FateRollCurrentStatus": "Текущий статус",
+        "FateRollUsed": "использовано",
+        "FateRollWillRoll": "Будет брошено",
+        "FateRollDice": "дайсов Судьбы",
+        "FateRollMaxUsedWarning": "Судьба полностью использована!",
+        "FateRollRolled": "Судьба брошена для {name} ({dice} дайсов)",
+        "FateRollMaxUsed": "Судьба полностью использована!",
+        "FateRollError": "Ошибка при броске Судьбы",
+        "FateRollButton": "Бросить Судьбу",
+        "FateRoll": "Бросок Судьбы",
+        "Cancel": "Отмена"
     }
 }

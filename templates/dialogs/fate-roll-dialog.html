@@ -1,0 +1,49 @@
+<form class="fate-roll-dialog">
+    <div class="dialog-area">
+        <div class="clearareaBox">
+            <div class="headlineItem headlineBio splatFont">
+                {{localize 'WOD20RU.FateRoll'}}
+            </div>
+        </div>
+        
+        <div class="infobox">
+            <div class="information-area">
+                {{localize 'WOD20RU.FateRollDescription'}}
+            </div>
+        </div>
+        
+        <div class="infobox">
+            <div class="headlineNormal">
+                {{localize 'WOD20RU.FateRollCurrentStatus'}}:
+            </div>
+            <div class="headlineNormal">
+                {{fate.used}} / {{fate.max}} {{localize 'WOD20RU.FateRollUsed'}}
+            </div>
+        </div>
+        
+        {{#if canUseFate}}
+        <div class="infobox">
+            <div class="headlineNormal">
+                {{localize 'WOD20RU.FateRollWillRoll'}}: 10 {{localize 'WOD20RU.FateRollDice'}}
+            </div>
+        </div>
+        {{else}}
+        <div class="infobox">
+            <div class="headlineNormal" style="color: #ff5555;">
+                {{localize 'WOD20RU.FateRollMaxUsedWarning'}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    
+    <div class="dialog-area centerText">
+        <button type="button" class="roll-fate-button dialog-button" {{#unless canUseFate}}disabled{{/unless}}>
+            <i class="icon fa-solid fa-dice-d10"></i>
+            {{localize 'WOD20RU.FateRollButton'}}
+        </button>
+        <button type="button" class="cancel-button dialog-button">
+            <i class="icon fa-solid fa-times"></i>
+            {{localize 'WOD20RU.Cancel'}}
+        </button>
+    </div>
+</form>
