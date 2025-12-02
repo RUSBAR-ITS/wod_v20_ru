@@ -6,6 +6,7 @@
 .resource.fate {
     flex: 0 0 20%;
     margin: 0 5px;
+    padding: 5px;
 }
 
 .resource.fate .resource-label {
@@ -29,14 +30,22 @@
 }
 
 /* Dots - identical to willpower-dot */
+.fate-dots, .fate-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+    margin: 5px 0;
+}
+
 .fate-dot {
     width: 18px;
     height: 18px;
-    margin: 0 2px;
     border: 1px solid #000;
     border-radius: 50%;
     background: #fff;
     cursor: pointer;
+    display: inline-block;
 }
 
 .fate-dot.filled {
@@ -47,10 +56,10 @@
 .fate-box {
     width: 18px;
     height: 18px;
-    margin: 0 2px;
     border: 1px solid #000;
     background: #fff;
     cursor: pointer;
+    display: inline-block;
     position: relative;
 }
 
@@ -69,4 +78,30 @@
 .fate-dot:hover,
 .fate-box:hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Баннер как у Willpower */
+.resource-counter[data-name="Fate"] {
+    margin: 10px 0;
+}
+
+.resource-counter[data-name="Fate"] h3 {
+    font-family: "Modesto Condensed", "Palatino Linotype", serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #4b4a44;
+    text-align: center;
+    border-bottom: 1px solid #782e22;
+    margin: 0 0 5px 0;
+    padding: 0 0 2px 0;
+}
+
+.resource-counter[data-name="Fate"] h3 .item-control {
+    float: right;
+    color: #782e22;
+    cursor: pointer;
+}
+
+.resource-counter[data-name="Fate"] h3 .item-control:hover {
+    color: #000;
 }

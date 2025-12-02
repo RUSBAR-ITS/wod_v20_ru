@@ -5,7 +5,7 @@
 	
 		{{!-- Always visible --}}
 		<header class="sheet-header">		
-					
+		
 		</header>	
 
 		<!-- Sheet part -->
@@ -75,34 +75,28 @@
 									</div>
 
 									<!-- Fate Section - Added after willpower -->
+									{{#if (isFateEnabled)}}
 									{{#if actor.system.fate}}
-									<div style="border: 2px solid red; padding: 10px; margin-top: 10px;">
-									    <div style="text-align: center; font-weight: bold; color: red;">FATE DEBUG</div>
-									    <div>Fate exists: {{system.fate}}</div>
-									    <div>Value: {{actor.system.fate.value}}, Used: {{actor.system.fate.used}}</div>
-									    <div class="resource fate" data-resource="fate" style="margin-top: 10px;">
-									        <div class="resource-label">
-									            <span>{{localize "WOD20RU.Fate"}}</span>
+									{{#with (prepareFate actor.system.fate) as |fate|}}
+									<div class="resource fate" data-resource="fate" style="margin-top: 10px;">
+									    <h3 class="resource-label">
+									        <span>Fate</span>
+									    </h3>
+									    <div class="resource-content">
+									        <div class="fate-dots">
+									            {{#each fate.dots as |dot i|}}
+									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
+									            {{/each}}
 									        </div>
-									        <div class="resource-content">
-									            <div class="fate-dots">
-									                {{#each actor.system.fate.dots as |dot i|}}
-									                <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
-									                {{/each}}
-									            </div>
-									            <div class="fate-boxes">
-									                {{#each actor.system.fate.boxes as |box i|}}
-									                <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
-									                {{/each}}
-									            </div>
+									        <div class="fate-boxes">
+									            {{#each fate.boxes as |box i|}}
+									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
+									            {{/each}}
 									        </div>
 									    </div>
 									</div>
-									{{else}}
-									<div style="border: 2px solid yellow; padding: 10px; margin-top: 10px;">
-									    <div style="text-align: center; font-weight: bold; color: yellow;">NO FATE DATA</div>
-									    <div>system.fate is falsy</div>
-									</div>
+									{{/with}}
+									{{/if}}
 									{{/if}}
 
 									<div style="margin-top: auto;">
@@ -149,34 +143,28 @@
 									{{{getGetStatArea actor actor.system.advantages.willpower "willpower" true true true}}}
 
 									<!-- Fate Section - Added after willpower -->
+									{{#if (isFateEnabled)}}
 									{{#if actor.system.fate}}
-									<div style="border: 2px solid red; padding: 10px; margin-top: 10px;">
-									    <div style="text-align: center; font-weight: bold; color: red;">FATE DEBUG</div>
-									    <div>Fate exists: {{system.fate}}</div>
-									    <div>Value: {{actor.system.fate.value}}, Used: {{actor.system.fate.used}}</div>
-									    <div class="resource fate" data-resource="fate" style="margin-top: 10px;">
-									        <div class="resource-label">
-									            <span>{{localize "WOD20RU.Fate"}}</span>
+									{{#with (prepareFate actor.system.fate) as |fate|}}
+									<div class="resource fate" data-resource="fate" style="margin-top: 10px;">
+									    <h3 class="resource-label">
+									        <span>Fate</span>
+									    </h3>
+									    <div class="resource-content">
+									        <div class="fate-dots">
+									            {{#each fate.dots as |dot i|}}
+									            <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
+									            {{/each}}
 									        </div>
-									        <div class="resource-content">
-									            <div class="fate-dots">
-									                {{#each actor.system.fate.dots as |dot i|}}
-									                <span class="fate-dot {{dot.cssClass}}" data-index="{{dot.index}}" data-type="{{dot.type}}"></span>
-									                {{/each}}
-									            </div>
-									            <div class="fate-boxes">
-									                {{#each actor.system.fate.boxes as |box i|}}
-									                <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
-									                {{/each}}
-									            </div>
+									        <div class="fate-boxes">
+									            {{#each fate.boxes as |box i|}}
+									            <span class="fate-box {{box.cssClass}}" data-index="{{box.index}}" data-type="{{box.type}}"></span>
+									            {{/each}}
 									        </div>
 									    </div>
 									</div>
-									{{else}}
-									<div style="border: 2px solid yellow; padding: 10px; margin-top: 10px;">
-									    <div style="text-align: center; font-weight: bold; color: yellow;">NO FATE DATA</div>
-									    <div>system.fate is falsy</div>
-									</div>
+									{{/with}}
+									{{/if}}
 									{{/if}}
 
 								</div>

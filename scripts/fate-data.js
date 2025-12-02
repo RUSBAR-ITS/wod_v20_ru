@@ -29,12 +29,10 @@ export class FateData {
         // Create initial Fate data exactly like willpower
         try {
             await actor.update({
-                system: {
-                    fate: {
-                        value: 0,      // Number of filled dots (0-10)
-                        used: 0,       // Number of filled boxes (0-10)
-                        max: 10        // Maximum value
-                    }
+                "system.fate": {
+                    value: 0,      // Number of filled dots (0-10)
+                    used: 0,       // Number of filled boxes (0-10)
+                    max: 10        // Maximum value
                 }
             });
             console.log(`Fate Data | Initialized Fate for ${actor.name}`);
@@ -58,12 +56,8 @@ export class FateData {
     static getFateData(actor) {
         if (!actor) return null;
         
-        console.log(`Fate Data | Getting Fate data for ${actor.name}`);
-        console.log(`Fate Data | actor.system:`, actor.system);
-        
         // Try different data paths
         if (actor.system?.fate) {
-            console.log(`Fate Data | Found in actor.system.fate`);
             return actor.system.fate;
         }
         
@@ -76,7 +70,10 @@ export class FateData {
     static prepareFateForTemplate(fateData) {
         console.log(`Fate Data | Preparing Fate data for template:`, fateData);
         
-        if (!fateData) return null;
+        if (!fateData) {
+            console.log(`Fate Data | No Fate data provided`);
+            return null;
+        }
         
         const value = fateData.value || 0;
         const used = fateData.used || 0;
@@ -84,35 +81,37 @@ export class FateData {
         
         console.log(`Fate Data | value=${value}, used=${used}, max=${max}`);
         
-        // Prepare dots array (like willpower.dots)
+        // Prepare dots array (like willpower.dots) - IMPORTANT: 0-indexed!
         const dots = [];
         for (let i = 0; i < max; i++) {
             dots.push({
                 cssClass: i < value ? "filled" : "",
-                index: i,
+                index: i,  // 0-based index
                 type: "dots"
             });
         }
         
-        // Prepare boxes array (like willpower.boxes)
+        // Prepare boxes array (like willpower.boxes) - IMPORTANT: 0-indexed!
         const boxes = [];
         for (let i = 0; i < max; i++) {
             boxes.push({
                 cssClass: i < used ? "filled" : "",
-                index: i,
+                index: i,  // 0-based index
                 type: "boxes"
             });
         }
         
         const result = {
-            dots: dots,
-            boxes: boxes,
             value: value,
             used: used,
-            max: max
+            max: max,
+            dots: dots,
+            boxes: boxes
         };
         
         console.log(`Fate Data | Prepared data:`, result);
+        console.log(`Fate Data | Dots array length: ${dots.length}`);
+        console.log(`Fate Data | Boxes array length: ${boxes.length}`);
         return result;
     }
 
@@ -135,23 +134,33 @@ export class FateData {
         
         try {
             if (type === "dots") {
-                // Left click on dot - set value
-                const newValue = (index < currentValue) ? index : index + 1;
+                // Click on dot - set value
+                // Note: index is 0-based from template, value is 1-based
+                const newValue = (index === currentValue - 1) ? index : index + 1;
                 console.log(`Fate Data | Setting value to: ${newValue}`);
-                await actor.update({ "system.fate.value": newValue });
+                
+                await actor.update({
+                    "system.fate.value": newValue
+                });
                 
                 // If used exceeds new value, adjust it
                 if (currentUsed > newValue) {
                     console.log(`Fate Data | Adjusting used to: ${newValue}`);
-                    await actor.update({ "system.fate.used": newValue });
+                    await actor.update({
+                        "system.fate.used": newValue
+                    });
                 }
             } else if (type === "boxes") {
-                // Left click on box - set used
-                let newUsed = (index < currentUsed) ? index : index + 1;
+                // Click on box - set used
+                // Note: index is 0-based from template, used is 1-based
+                let newUsed = (index === currentUsed - 1) ? index : index + 1;
                 // Cannot exceed value
                 newUsed = Math.min(newUsed, currentValue);
                 console.log(`Fate Data | Setting used to: ${newUsed}`);
-                await actor.update({ "system.fate.used": newUsed });
+                
+                await actor.update({
+                    "system.fate.used": newUsed
+                });
             }
             
             console.log(`Fate Data | Updated Fate for ${actor.name}`);

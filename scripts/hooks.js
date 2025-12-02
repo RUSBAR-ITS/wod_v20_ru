@@ -20,6 +20,18 @@ if (game.actors) {
 function initializeHooks() {
     console.log("Fate Hooks | Initializing hooks");
     
+    // Register Handlebars helper
+    console.log("Fate Hooks | Registering Handlebars helper");
+    Handlebars.registerHelper('prepareFate', function(fateData) {
+        if (!fateData) return null;
+        return FateData.prepareFateForTemplate(fateData);
+    });
+    
+    // Helper to check if Fate is enabled
+    Handlebars.registerHelper('isFateEnabled', function() {
+        return isFateEnabled();
+    });
+    
     // Initialize Fate data for all existing actors when game is ready
     Hooks.once("ready", () => {
         console.log("Fate Hooks | Game ready, initializing Fate data for all actors");
@@ -32,39 +44,6 @@ function initializeHooks() {
         FateData.initializeActorFate(actor);
     });
     
-    // Prepare Fate data for templates - ДОБАВЛЯЕМ ПРИОРИТЕТ!
-    console.log("Fate Hooks | Registering prepareActorData hook");
-    Hooks.on("prepareActorData", (actorData) => {
-        console.log(`Fate Hooks | prepareActorData called for: ${actorData.actor?.name || 'unknown'}`);
-        
-        if (!isFateEnabled()) return;
-        
-        const actor = actorData.actor || actorData;
-        if (!actor || !FateData.isVampire(actor)) return;
-        
-        console.log(`Fate Hooks | Preparing Fate data for vampire: ${actor.name}`);
-        
-        const fate = FateData.getFateData(actor);
-        if (!fate) {
-            console.log(`Fate Hooks | No Fate data found for ${actor.name}`);
-            return;
-        }
-        
-        console.log(`Fate Hooks | Fate data found:`, fate);
-        
-        // Prepare Fate data for template
-        const preparedFate = FateData.prepareFateForTemplate(fate);
-        console.log(`Fate Hooks | Prepared Fate data:`, preparedFate);
-        
-        if (preparedFate) {
-            // Store in actor data for template access
-            actorData.system = actorData.system || {};
-            actorData.system.fate = preparedFate;
-            
-            console.log(`Fate Hooks | Added Fate data to actorData for ${actor.name}`);
-        }
-    }, {once: false, priority: 100}); // Высокий приоритет для гарантии выполнения
-    
     // Add Fate to actor sheets - handle clicks
     Hooks.on("renderActorSheet", (app, html, data) => {
         if (!isFateEnabled()) return;
@@ -73,10 +52,6 @@ function initializeHooks() {
         if (!actor || !FateData.isVampire(actor)) return;
         
         console.log(`Fate Hooks | Setting up click handlers for: ${actor.name}`);
-        
-        // Добавляем отладочную информацию
-        console.log(`Fate Hooks | Actor system.fate:`, actor.system?.fate);
-        console.log(`Fate Hooks | Template data:`, data);
         
         // Add click handlers for Fate elements
         html.on('click', '.fate-dot, .fate-box', async (event) => {
