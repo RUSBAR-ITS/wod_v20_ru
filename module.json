@@ -58,7 +58,8 @@
     "scripts/fate-hooks-sheet.js",
     "scripts/fate-hooks-dialog-checkbox.js",
     "scripts/fate-hooks-dialog-patch.js",
-    "scripts/fate-patch-dialog-generalroll.js"
+    "scripts/fate-patch-dialog-generalroll.js",
+    "scripts/fate-bootstrap.js"
   ],
 
   "styles": [

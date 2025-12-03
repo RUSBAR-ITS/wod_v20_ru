@@ -22,7 +22,6 @@ console.log("Fate Hooks | Dialog Patch module loading (pure Fate UI only)");
 
 import { isFateEnabled } from "./settings.js";
 import { FateData } from "./fate-data.js";
-// Use the same absolute path style as in other Fate patches
 import { DialogGeneralRoll } from "/systems/worldofdarkness/module/dialogs/dialog-generalroll.js";
 
 /**
@@ -85,7 +84,6 @@ function installDialogGeneralRollFateGetDataPatch() {
       // If Fate is disabled or this is NOT a pure Fate roll, do not touch anything.
       if (!fateEnabled || !isFateRoll || !actor) {
         if (!fateEnabled || !isFateRoll) {
-          // This is expected for normal general rolls; keep this log low-noise.
           console.debug(
             "Fate Hooks | Dialog Patch getData: not a pure Fate roll or Fate disabled, leaving data untouched."
           );

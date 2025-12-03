@@ -17,7 +17,6 @@ console.log("Fate Patch | DialogGeneralRoll patch module loading");
 import { isFateEnabled } from "./settings.js";
 import { fateState } from "./fate-state.js";
 
-// Import the system dialog class directly from the system ES module.
 import { DialogGeneralRoll } from "/systems/worldofdarkness/module/dialogs/dialog-generalroll.js";
 
 let OriginalGeneralRollMethod = null;
@@ -116,7 +115,7 @@ function installDialogGeneralRollPatch() {
           } else {
             const actorFateValue =
               actor.system?.fate?.value ??
-              actor.data?.data?.fate?.value ?? // legacy safety
+              actor.data?.data?.fate?.value ??
               0;
             fateDice = toInt(actorFateValue);
           }
