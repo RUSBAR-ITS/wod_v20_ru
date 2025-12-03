@@ -152,6 +152,101 @@ function initializeHooks() {
     });
   });
 
+  // -----------------------------------------------------------------------
+  // Добавляем чекбокс Fate в общий диалог броска
+  // (кроме урона и чистого броска Fate)
+  // -----------------------------------------------------------------------
+  Hooks.on("renderDialogGeneralRoll", (app, html, data) => {
+    console.log("Fate Hooks | renderDialogGeneralRoll fired");
+
+    try {
+      if (!isFateEnabled()) {
+        console.log("Fate Hooks | Fate disabled, abort");
+        return;
+      }
+
+      // В WoD20 actor лежит внутри объекта броска
+      const actor = app.actor ?? app.object?.actor;
+      console.log(
+        "Fate Hooks | actor resolved",
+        actor ? { id: actor.id, name: actor.name, type: actor.type } : null
+      );
+
+      if (!actor?.system) {
+        console.log("Fate Hooks | No actor.system, abort");
+        return;
+      }
+
+      const fate = actor.system.fate;
+      console.log("Fate Hooks | actor.system.fate =", fate);
+      if (!fate || !fate.value || fate.value <= 0) {
+        console.log("Fate Hooks | No Fate value, abort");
+        return;
+      }
+
+      // Не показываем чекбокс для чистого Fate-броска
+      if (app.object?.isFate === true) {
+        console.log("Fate Hooks | Pure Fate roll (isFate === true), no checkbox");
+        return;
+      }
+
+      // Ищем чекбокс "Использовать Силу Воли",
+      // чтобы разместить Fate сразу под ним
+      const wpInput = html.find('input[name="useWillpower"]').first();
+      console.log("Fate Hooks | useWillpower inputs found:", wpInput.length);
+
+      if (!wpInput.length) {
+        console.log("Fate Hooks | Willpower checkbox not found, abort Fate checkbox insert");
+        return;
+      }
+
+      const wpBox = wpInput.closest(".clearareaBox");
+      if (!wpBox.length) {
+        console.log("Fate Hooks | wpBox not found, abort");
+        return;
+      }
+
+      const localizedLabel = game.i18n.localize("WOD20RU.UseFate");
+      console.log("Fate Hooks | Inserting Fate checkbox with label:", localizedLabel);
+
+      const fateHtml = $(`
+        <div class="clearareaBox infobox dialog-checkbox wod-fate-checkbox">
+          <div class="pullLeft">
+            <input type="checkbox" name="useFate">
+          </div>
+          <div class="pullLeft">
+            <label class="dialog-casting-type-label">${localizedLabel}</label>
+          </div>
+        </div>
+      `);
+
+      // Вставляем наш Fate-чекбокс сразу после блока Willpower
+      fateHtml.insertAfter(wpBox);
+      console.log("Fate Hooks | Fate checkbox inserted into DOM");
+
+      const checkbox = fateHtml.find('input[name="useFate"]');
+
+      // Инициализация из текущего объекта броска (если кто-то уже поставил флаг)
+      const initialChecked = !!app.object?.useFate;
+      checkbox.prop("checked", initialChecked);
+
+      // При изменении чекбокса просто помечаем объект броска.
+      // НИКАКИХ изменений бонусов/пулов здесь не делаем.
+      checkbox.on("change", (event) => {
+        const checked = event.currentTarget.checked;
+
+        if (app.object) {
+          app.object.useFate = checked;
+          app.object.fateDice = checked ? (fate.value ?? 0) : 0;
+        }
+
+        console.log("Fate Hooks | useFate checkbox changed:", checked);
+      });
+    } catch (error) {
+      console.error("WOD20-RU | Failed to render Fate checkbox in DialogGeneralRoll", error);
+    }
+  });
+
   console.log("Fate Hooks | Hooks initialized");
 }
 
