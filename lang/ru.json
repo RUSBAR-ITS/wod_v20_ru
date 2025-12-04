@@ -1963,6 +1963,8 @@
     "WOD20RU": {
         "Fate": "Судьба",
         "FateHeadlineForFrenzy": "Бонус Cудьбы",
+        "Fate-success": "Успехи Судьбы",
+        "Fate-botch": "Провалы Судьбы",
         "UseFateForFrenzy": "Использовать Судьбу",
         "UseFate": "Использовать Судьбу",
         "FateRollTooltip": "Кликните, чтобы изменить значение",

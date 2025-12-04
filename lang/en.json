@@ -2,6 +2,8 @@
   "WOD20RU": {
     "Fate": "Fate",
     "FateHeadlineForFrenzy": "Fate Bonus",
+    "Fate-success": "Fate Successes",
+    "Fate-botch": "Fate Botches",
     "UseFateForFrenzy": "Use Fate",
     "UseFate": "Use Fate",
     "FateRollTooltip": "Click to change value",

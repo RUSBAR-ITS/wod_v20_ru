@@ -49,12 +49,12 @@
                     {{#if result.fate}}
                         {{#if (gt result.fate.net 0)}}
                             <div class="tray-fate-area">
-                                Fate Success: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-success"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                         {{#if (gt 0 result.fate.net)}}
                             <div class="tray-fate-area">
-                                Fate Botch: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-botch"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                     {{/if}}
@@ -62,7 +62,7 @@
 
                 <div>     
                     {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
                     {{/each}}
                 </div>
             </div>
@@ -135,12 +135,12 @@
                     {{#if result.fate}}
                         {{#if (gt result.fate.net 0)}}
                             <div class="tray-fate-area">
-                                Fate Success: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-success"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                         {{#if (gt 0 result.fate.net)}}
                             <div class="tray-fate-area">
-                                Fate Botch: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-botch"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                     {{/if}}
@@ -148,7 +148,7 @@
 
                 <div>
                     {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
                     {{/each}}
                 </div>
             </div>            
@@ -202,12 +202,12 @@
                     {{#if result.fate}}
                         {{#if (gt result.fate.net 0)}}
                             <div class="tray-fate-area">
-                                Fate Success: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-success"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                         {{#if (gt 0 result.fate.net)}}
                             <div class="tray-fate-area">
-                                Fate Botch: {{result.fate.value}}
+                                {{localize "WOD20RU.Fate-botch"}}: {{result.fate.value}}
                             </div>
                         {{/if}}
                     {{/if}}
@@ -215,7 +215,7 @@
 
                 <div>
                     {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
                     {{/each}}
                 </div>
             </div>            

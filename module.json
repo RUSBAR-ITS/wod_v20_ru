@@ -71,6 +71,7 @@
     "scripts/fate-patch-dialog-power.js",
     "scripts/fate-hooks-dialog-item.js",
     "scripts/fate-patch-dialog-item.js",
+    "scripts/wodru-dice-so-nice.js",
     "scripts/fate-bootstrap.js"
   ],
 

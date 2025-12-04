@@ -14,6 +14,10 @@
 import BonusHelper from "/systems/worldofdarkness/module/scripts/bonus-helpers.js";
 import CombatHelper from "/systems/worldofdarkness/module/scripts/combat-helpers.js";
 
+// Dice So Nice colorset name for Fate dice.
+// This must match the name registered in wodru-dice-so-nice.js
+const WODRU_FATE_DSN_COLORSET = "wodru-fate-emerald";
+
 let _diceColor;
 let _specialDiceType = "";
 
@@ -307,10 +311,34 @@ export async function DiceRoller(diceRoll) {
       }
       // If explodingSameSlot is true, we stay in the same slot and keep
       // currentSlotIsFate as-is.
-
+          
+      // Decide whether this particular die belongs to a Fate slot.
+      // diceRoll._wodru_fateMeta and currentSlotIsFate are set earlier
+      // when we compute Fate slots for this roll.
+      const isFateDie =
+        !!diceRoll._wodru_fateMeta &&
+        currentSlotIsFate === true;
+          
       let chosenDiceColor = _diceColor;
       const roll = await new Roll("1d10");
       await roll.evaluate();
+          
+      // Tag this die for Dice So Nice if it is a Fate die.
+      // This is safe even if Dice So Nice is not installed.
+      if (isFateDie) {
+        if (roll.dice && roll.dice[0]) {
+          if (!roll.dice[0].options) {
+            roll.dice[0].options = {};
+          }
+          roll.dice[0].options.colorset = WODRU_FATE_DSN_COLORSET;
+        } else if (roll.terms && roll.terms[0]) {
+          if (!roll.terms[0].options) {
+            roll.terms[0].options = {};
+          }
+          roll.terms[0].options.colorset = WODRU_FATE_DSN_COLORSET;
+        }
+      }
+      
       allDices.push(roll);
 
       // Increment the number of dices that've been rolled

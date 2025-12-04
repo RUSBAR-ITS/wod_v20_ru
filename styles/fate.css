@@ -105,3 +105,27 @@
 .resource-counter[data-name="Fate"] h3 .item-control:hover {
     color: #000;
 }
+
+/* Fate dice: recolor the icon itself into a golden tone */
+.wod-svg.wodru-dice-fate {
+  /* Сначала убираем исходный цвет и тянем в «золото» */
+  filter:
+    grayscale(1)         /* убираем исходный цвет */
+    sepia(1)             /* в теплую гамму */
+    saturate(6)          /* усиливаем насыщенность */
+    hue-rotate(-15deg)   /* подгоняем оттенок к золоту */
+    brightness(1.05);    /* чуть подсветлить для читаемости */
+
+  /* Немного компенсируем изменение визуального размера */
+  transform: translateZ(0); /* hack для некоторых браузеров, можно опустить */
+}
+
+/* Опционально — при наведении Fate-кубы чуть ярче */
+.wod-svg.wodru-dice-fate:hover {
+  filter:
+    grayscale(1)
+    sepia(1)
+    saturate(7)
+    hue-rotate(-15deg)
+    brightness(1.2);
+}
