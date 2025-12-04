@@ -53,6 +53,7 @@
     "scripts/settings.js",
     "scripts/fate-data.js",
     "scripts/fate-state.js",
+    "scripts/wodru-dice-roller.js",
     "scripts/fate-dice-roller.js",
     "scripts/fate-roll-dialog.js",
     "scripts/fate-override-dialog-generalroll-roll.js",
