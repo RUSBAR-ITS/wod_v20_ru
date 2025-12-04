@@ -99,6 +99,89 @@ function handleRenderDialogGeneralRoll(app, html, data) {
     return;
   }
 
+  const rollKey = app.object?.key;
+
+  // --- WOD20RU: Fate checkbox for pure Willpower roll (after Dice Pool) ---
+  if (rollKey === "willpower") {
+    console.log(
+      "Fate Hooks | Willpower roll detected, inserting Fate checkbox after Dice Pool"
+    );
+
+    // Не вставляем второй раз
+    if (html.find(".wod20ru-fate-checkbox").length > 0) {
+      console.log(
+        "Fate Hooks | Willpower Fate checkbox already present, skip"
+      );
+      return;
+    }
+
+    // Ищем блок «Пул кубов» (dicepool) и используем его как якорь
+    const dicePoolArea = html
+      .find(".dialog-area")
+      .filter((i, el) => {
+        const headline = $(el)
+          .find(".infobox.headline")
+          .text()
+          .trim();
+        return headline === game.i18n.localize("wod.dialog.dicepool");
+      })
+      .first();
+
+    if (!dicePoolArea.length) {
+      console.log(
+        "Fate Hooks | Dice Pool area not found for Willpower dialog, abort"
+      );
+      return;
+    }
+
+    const localizedLabel = game.i18n.localize("WOD20RU.UseFate");
+
+    const fateHtml = $(`
+      <div class="dialog-area wod20ru-fate-checkbox">
+        <div class="clearareaBox infobox dialog-checkbox">
+          <div class="pullLeft">
+            <input type="checkbox"
+                   id="wod20ru-use-fate-willpower"
+                   name="useFate">
+          </div>
+          <div class="pullLeft">
+            <label class="dialog-casting-type-label"
+                   for="wod20ru-use-fate-willpower">
+              ${localizedLabel}
+            </label>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const initialChecked = !!app.object.useFate;
+    fateHtml.find('input[name="useFate"]').prop("checked", initialChecked);
+
+    // Вставляем сразу после блока «Пул кубов»
+    dicePoolArea.after(fateHtml);
+    console.log(
+      "Fate Hooks | Willpower Fate checkbox inserted after Dice Pool"
+    );
+
+    const checkbox = fateHtml.find('input[name="useFate"]');
+    checkbox.on("change", (event) => {
+      const checked = event.currentTarget.checked;
+      const currentFateValue = Number(fateValue) || 0;
+
+      app.object.useFate = checked;
+      app.object.fateDice = checked ? currentFateValue : 0;
+
+      console.log("Fate Hooks | Willpower Fate checkbox changed", {
+        checked,
+        useFate: app.object.useFate,
+        fateDice: app.object.fateDice
+      });
+    });
+
+    // Для диалога Воли дальше ничего не делаем
+    return;
+  }
+
   // Ищем чекбокс "Использовать Силу Воли", вставляем Fate прямо под ним
   const wpInput = html.find('input[name="useWillpower"]').first();
   console.log(
