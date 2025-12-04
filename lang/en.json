@@ -1,6 +1,8 @@
 {
   "WOD20RU": {
     "Fate": "Fate",
+    "FateHeadlineForFrenzy": "Fate Bonus",
+    "UseFateForFrenzy": "Use Fate",
     "UseFate": "Use Fate",
     "FateRollTooltip": "Click to change value",
     "FateRollDescription": "Fate roll adds 10 additional dice of a different color. 10s and 1s are counted separately to determine fate success/failure.",
