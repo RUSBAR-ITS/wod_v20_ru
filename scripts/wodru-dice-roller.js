@@ -7,12 +7,15 @@
 //    * determine how many effective dice are "base" and how many are "Fate",
 //    * mark Fate slots (including all their exploding rolls),
 //    * count Fate 1s and 10s separately per target,
-//    * store the result in diceResult.fate = { ones, tens, net, type }.
+//    * store the result in diceResult.fate = { ones, tens, net, type, value }.
 // - Individual dice in diceResult.dices get a flag `isFate` (true/false) for UI.
 // - InitiativeRoll is copied verbatim from the system and is not Fate-aware.
+// - For each result we also store `botchDegree` when rollResult === "botch":
+//    botchDegree ≈ onesCount - successesBeforeOnesAndWillpower (с безопасным фолбэком).
 
 import BonusHelper from "/systems/worldofdarkness/module/scripts/bonus-helpers.js";
 import CombatHelper from "/systems/worldofdarkness/module/scripts/combat-helpers.js";
+import { isEvilBotchesEnabled } from "./settings.js";
 
 // Dice So Nice colorset name for Fate dice.
 // This must match the name registered in wodru-dice-so-nice.js
@@ -141,30 +144,17 @@ export class DiceRollContainer {
 }
 
 /**
- * Main DiceRoller with Fate support.
- * This is a fork of the original implementation with the following additions:
+ * Main DiceRoller with Fate support and optional evil botches logic.
  *
- * - Reads diceRoll._wodru_fateMeta (if present) to know how many dice in this roll
- *   were added as Fate dice.
- * - For each target, after wound penalties:
- *    * totalSlots = numberDices (as in the original),
- *    * baseSlots = min(totalSlots, fateMeta.baseDice),
- *    * fateSlots = max(0, totalSlots - baseSlots).
- *   Conceptually:
- *    - the first `baseSlots` slots are "normal" dice,
- *    - the remaining `fateSlots` slots are "Fate" dice.
+ * Evil botчи:
+ * - Для каждой цели считаем:
+ *    * successesBeforeOnesAndWillpower — ВСЕ успехи до вычитания единиц:
+ *      автоуспехи + успех от Воли (если есть) + успехи с кубов (10 и значения ≥ сложности).
+ *    * onesCount — общее количество выпавших 1 на всех кубах.
+ * - Если onesCount > successesBeforeOnesAndWillpower и ботчи вообще разрешены:
+ *    → считаем бросок злым ботчем (rollResult = "botch", успехи = 0).
  *
- * - A "slot" is one logical die (with possible exploding re-rolls):
- *    * New slot → slotIndex increments.
- *    * Exploding die → all subsequent rolls for that slot inherit the same
- *      Fate/non-Fate status.
- *
- * - For each target:
- *    * count Fate 1s and 10s as fateOnes / fateTens,
- *    * write diceResult.fate = { ones, tens, net, type },
- *      where type is "success"/"botch"/"zero".
- *
- * Mechanics (success / botch / exploding / soak rules) are otherwise unchanged.
+ * Механика WoD (сколько даёт 10, взрыв, soak и т.п.) не меняется.
  */
 export async function DiceRoller(diceRoll) {
   const actor = diceRoll.actor;
@@ -185,7 +175,8 @@ export async function DiceRoller(diceRoll) {
 
   let rolledDices;
   let success;
-  let bonusSuccesses = 0;
+  let bonusSuccesses = 0; // авто успехи от бафов
+  let willpowerBonus = 0; // отдельный успех от Воли
   let rolledOne = false;
   let rolledAnySuccesses = false;
   let isfavorited = false;
@@ -195,7 +186,6 @@ export async function DiceRoller(diceRoll) {
   let systemtext = [];
 
   // Fate metadata for this roll (set by our Fate wrapper).
-  // If absent or disabled, this function behaves exactly like the original.
   const fateMeta = diceRoll._wodru_fateMeta;
   const fateEnabled =
     !!fateMeta &&
@@ -208,6 +198,8 @@ export async function DiceRoller(diceRoll) {
     fateEnabled && Number.isFinite(fateMeta.baseDice)
       ? Math.max(0, fateMeta.baseDice | 0)
       : 0;
+
+  const evilBotchesEnabled = isEvilBotchesEnabled() === true;
 
   difficulty =
     difficulty < CONFIG.worldofdarkness.lowestDifficulty
@@ -234,7 +226,7 @@ export async function DiceRoller(diceRoll) {
       }
     }
     rolledAnySuccesses = true;
-    bonusSuccesses += 1;
+    willpowerBonus = 1; // этот успех учитывается и в success, и в "до вычета единиц"
   }
 
   if (diceRoll.origin == "soak" && !CONFIG.worldofdarkness.useOnesSoak) {
@@ -256,13 +248,19 @@ export async function DiceRoller(diceRoll) {
   }
 
   for (const target of targetlist) {
-    success = bonusSuccesses;
+    // Стартуем с автоуспехов + Воли
+    success = bonusSuccesses + willpowerBonus;
     rolledAnySuccesses = success > 0;
     rolledDices = 0;
     diceResult = [];
     diceResult.dices = [];
     diceResult.successes = success;
     diceResult.rolledAnySuccesses = rolledAnySuccesses;
+
+    // успехи именно с кубов ДО вычета единиц
+    let diceSuccessesBeforeOnes = 0;
+    // общее количество 1
+    let onesCount = 0;
 
     let numberDices = target.numDices + diceRoll.woundpenalty;
 
@@ -271,15 +269,11 @@ export async function DiceRoller(diceRoll) {
     }
 
     // --- Fate slot bookkeeping for this target -----------------------------
-    // We treat the *effective* number of dice after wound penalty as "slots".
-    // The first `baseSlotsForTarget` are normal, the rest are Fate.
     const totalSlotsForTarget = numberDices;
     let baseSlotsForTarget = totalSlotsForTarget;
     let fateSlotsForTarget = 0;
 
     if (fateEnabled && totalSlotsForTarget > 0) {
-      // We assume: there were `globalBaseDice` "normal" dice in the original pool.
-      // After penalties, base slots are capped by both total slots and globalBaseDice.
       baseSlotsForTarget = Math.min(totalSlotsForTarget, globalBaseDice);
       fateSlotsForTarget = Math.max(
         0,
@@ -301,7 +295,6 @@ export async function DiceRoller(diceRoll) {
     while (numberDices > rolledDices) {
       // Decide which slot we are in and whether it is a Fate slot.
       if (!explodingSameSlot) {
-        // New logical slot
         currentSlotIsFate =
           fateEnabled &&
           totalSlotsForTarget > 0 &&
@@ -309,22 +302,15 @@ export async function DiceRoller(diceRoll) {
           slotIndex < totalSlotsForTarget;
         slotIndex += 1;
       }
-      // If explodingSameSlot is true, we stay in the same slot and keep
-      // currentSlotIsFate as-is.
-          
-      // Decide whether this particular die belongs to a Fate slot.
-      // diceRoll._wodru_fateMeta and currentSlotIsFate are set earlier
-      // when we compute Fate slots for this roll.
+
       const isFateDie =
-        !!diceRoll._wodru_fateMeta &&
-        currentSlotIsFate === true;
-          
+        !!diceRoll._wodru_fateMeta && currentSlotIsFate === true;
+
       let chosenDiceColor = _diceColor;
       const roll = await new Roll("1d10");
       await roll.evaluate();
-          
-      // Tag this die for Dice So Nice if it is a Fate die.
-      // This is safe even if Dice So Nice is not installed.
+
+      // Dice So Nice цвет для Fate-кубов
       if (isFateDie) {
         if (roll.dice && roll.dice[0]) {
           if (!roll.dice[0].options) {
@@ -338,29 +324,33 @@ export async function DiceRoller(diceRoll) {
           roll.terms[0].options.colorset = WODRU_FATE_DSN_COLORSET;
         }
       }
-      
+
       allDices.push(roll);
 
-      // Increment the number of dices that've been rolled
       rolledDices += 1;
-
-      // Reset exploding flag; we will set it to true again if exploding triggers.
       explodingSameSlot = false;
 
-      // Evaluate each roll term
       roll.terms[0].results.forEach((dice) => {
-        // --- Original WoD success / botch / exploding logic ----------------
-        if (dice.result == 10) {
+        const dieValue = parseInt(dice.result, 10);
+
+        // --- Оригинальная логика успехов/ботчей/взрыва --------------------
+        if (dieValue === 10) {
+          let gainedSuccesses = 0;
+
           if (
             CONFIG.worldofdarkness.usespecialityAddSuccess &&
             diceRoll.speciality
           ) {
-            success += CONFIG.worldofdarkness.specialityAddSuccess;
+            gainedSuccesses = CONFIG.worldofdarkness.specialityAddSuccess;
           } else if (CONFIG.worldofdarkness.usetenAddSuccess) {
-            success += CONFIG.worldofdarkness.tenAddSuccess;
+            gainedSuccesses = CONFIG.worldofdarkness.tenAddSuccess;
           } else {
-            success += 1;
+            gainedSuccesses = 1;
           }
+
+          success += gainedSuccesses;
+          diceSuccessesBeforeOnes += gainedSuccesses;
+
           if (CONFIG.worldofdarkness.useexplodingDice) {
             if (
               CONFIG.worldofdarkness.explodingDice == "speciality" &&
@@ -376,44 +366,48 @@ export async function DiceRoller(diceRoll) {
           }
 
           rolledAnySuccesses = true;
-        } else if (dice.result >= difficulty) {
+        } else if (dieValue >= difficulty) {
           rolledAnySuccesses = true;
           success += 1;
-        } else if (dice.result == 1 && actor !== undefined) {
-          if (
-            CONFIG.worldofdarkness.handleOnes &&
-            canBotch &&
-            !actor.system.attributes[diceRoll.attribute]?.isfavorited &&
-            !actor.system.attributes[diceRoll.ability]?.isfavorited &&
-            !actor.system.abilities[diceRoll.attribute]?.isfavorited &&
-            !actor.system.abilities[diceRoll.ability]?.isfavorited
-          ) {
-            success--;
-          }
-          // special rules regarding Exalted
-          else if (
-            actor.system.attributes[diceRoll.attribute]?.isfavorited ||
-            actor.system.attributes[diceRoll.ability]?.isfavorited &&
-              actor.system.abilities[diceRoll.attribute]?.isfavorited ||
-            actor.system.abilities[diceRoll.ability]?.isfavorited
-          ) {
-            isfavorited = true;
+          diceSuccessesBeforeOnes += 1;
+        } else if (dieValue === 1) {
+          onesCount += 1;
+
+          if (actor !== undefined) {
+            if (
+              CONFIG.worldofdarkness.handleOnes &&
+              canBotch &&
+              !actor.system.attributes[diceRoll.attribute]?.isfavorited &&
+              !actor.system.attributes[diceRoll.ability]?.isfavorited &&
+              !actor.system.abilities[diceRoll.attribute]?.isfavorited &&
+              !actor.system.abilities[diceRoll.ability]?.isfavorited
+            ) {
+              success--;
+            }
+            // special rules regarding Exalted
+            else if (
+              actor.system.attributes[diceRoll.attribute]?.isfavorited ||
+              (actor.system.attributes[diceRoll.ability]?.isfavorited &&
+                actor.system.abilities[diceRoll.attribute]?.isfavorited) ||
+              actor.system.abilities[diceRoll.ability]?.isfavorited
+            ) {
+              isfavorited = true;
+            }
           }
 
           rolledOne = true;
         }
 
-        // --- Fate counters: only statistics, mechanics unchanged -----------
+        // --- Fate статистика ----------------------------------------------
         if (fateEnabled && currentSlotIsFate) {
-          const value = parseInt(dice.result, 10);
-          if (value === 1) {
+          if (dieValue === 1) {
             fateOnes += 1;
-          } else if (value === 10) {
+          } else if (dieValue === 10) {
             fateTens += 1;
           }
         }
 
-        // --- Original special dice color logic -----------------------------
+        // --- Цвета специальных кубов --------------------------------------
         if (
           diceRoll.numSpecialDices >= rolledDices &&
           diceRoll.numSpecialDices > 0
@@ -421,11 +415,9 @@ export async function DiceRoller(diceRoll) {
           chosenDiceColor = _specialDiceType;
         }
 
-        // Result object for this die as used by the original template.
         const result = {
-          value: parseInt(dice.result, 10),
+          value: dieValue,
           color: chosenDiceColor,
-          // New flag: is this die from a Fate slot?
           isFate: fateEnabled && currentSlotIsFate,
         };
 
@@ -433,28 +425,46 @@ export async function DiceRoller(diceRoll) {
       });
     }
 
+    // Успехи "до вычета единиц": авто + воля + успехи с кубов
+    const successesBeforeOnesAndWillpower =
+      bonusSuccesses + willpowerBonus + diceSuccessesBeforeOnes;
+
+    // Применяем волю / обрезаем отрицательные успехи (как в оригинале)
     if (usewillpower && success < 1) {
       success = 1;
     } else if (success < 0) {
       success = 0;
     }
 
-    if (success > 0) {
-      rollResult = "success";
-    } else if (
-      CONFIG.worldofdarkness.handleOnes &&
-      rolledOne &&
-      !rolledAnySuccesses &&
-      canBotch
-    ) {
-      rollResult = "botch";
-    } else if (!CONFIG.worldofdarkness.handleOnes && rolledOne && canBotch) {
-      rollResult = "botch";
-    } else {
-      rollResult = "fail";
+    // Злой ботч
+    let evilBotchApplied = false;
+    if (evilBotchesEnabled && canBotch) {
+      if (onesCount > successesBeforeOnesAndWillpower) {
+        rollResult = "botch";
+        success = 0;
+        evilBotchApplied = true;
+      }
     }
 
-    // if setting of speciality not allow botch is in effect it is a fail instead
+    // Стандартное определение результата, если злой ботч не сработал
+    if (!evilBotchApplied) {
+      if (success > 0) {
+        rollResult = "success";
+      } else if (
+        CONFIG.worldofdarkness.handleOnes &&
+        rolledOne &&
+        !rolledAnySuccesses &&
+        canBotch
+      ) {
+        rollResult = "botch";
+      } else if (!CONFIG.worldofdarkness.handleOnes && rolledOne && canBotch) {
+        rollResult = "botch";
+      } else {
+        rollResult = "fail";
+      }
+    }
+
+    // Если по настройкам ботча со специализацией быть не должно
     if (
       rollResult == "botch" &&
       !CONFIG.worldofdarkness.specialityAllowBotch &&
@@ -463,22 +473,77 @@ export async function DiceRoller(diceRoll) {
       rollResult = "fail";
     }
 
-    diceResult.successes = `${game.i18n.localize("wod.dice.successes")}: ${success}`;
+    // Степень ботча (botchDegree) — считаем после финального rollResult
+    let botchDegree = 0;
+    if (rollResult === "botch") {
+      const rawDegree = onesCount - successesBeforeOnesAndWillpower;
+
+      if (rawDegree > 0) {
+        botchDegree = rawDegree;
+      } else if (onesCount > 0) {
+        // Фолбэк на "количество единиц", если по какой-то причине
+        // rawDegree не положителен, но мы всё равно в состоянии botch.
+        botchDegree = onesCount;
+      } else {
+        // Минимум 1, чтобы не показывать "Ботч: 0"
+        botchDegree = 1;
+      }
+    }
+
+    // Fate net заранее, чтобы можно было залогировать
+    let fateNet = 0;
+    if (fateEnabled) {
+      fateNet = fateTens - fateOnes;
+    }
+
+    // Подробный лог, чтобы видеть все цифры
+    if (evilBotchesEnabled) {
+      console.log(
+        "Evil Botches | roll summary",
+        `actor=${actor?.name}`,
+        `origin=${diceRoll.origin}`,
+        `attr=${diceRoll.attribute}`,
+        `ability=${diceRoll.ability}`,
+        `diff=${difficulty}`,
+        `useWP=${usewillpower}`,
+        `bonusSucc=${bonusSuccesses}`,
+        `wpSucc=${willpowerBonus}`,
+        `diceSuccBeforeOnes=${diceSuccessesBeforeOnes}`,
+        `succBeforeOnesTotal=${successesBeforeOnesAndWillpower}`,
+        `ones=${onesCount}`,
+        `finalSucc=${success}`,
+        `rolledAnySucc=${rolledAnySuccesses}`,
+        `rolledOne=${rolledOne}`,
+        `canBotch=${canBotch}`,
+        `evilApplied=${evilBotchApplied}`,
+        `rollResult=${rollResult}`,
+        `botchDegree=${botchDegree}`,
+        `fateEnabled=${fateEnabled}`,
+        `fateOnes=${fateOnes}`,
+        `fateTens=${fateTens}`,
+        `fateNet=${fateNet}`
+      );
+    }
+
+    // Сохраняем в результат ЧИСЛО успехов (шаблон сам пишет "Успехи:")
+    diceResult.successes = success;
     diceResult.rolledAnySuccesses = rolledAnySuccesses;
     diceResult.rollResult = rollResult;
+    if (rollResult === "botch") {
+      diceResult.botchDegree = botchDegree;
+    }
 
     // --- Fate summary for this target -------------------------------------
     if (fateEnabled) {
-      const net = fateTens - fateOnes;
       let type = "zero";
-      if (net > 0) type = "success";
-      else if (net < 0) type = "botch";
+      if (fateNet > 0) type = "success";
+      else if (fateNet < 0) type = "botch";
 
       diceResult.fate = {
         ones: fateOnes,
         tens: fateTens,
-        net,
-        value: Math.abs(net),
+        net: fateNet,
+        value: Math.abs(fateNet),
         type,
       };
     }
@@ -706,7 +771,6 @@ export async function InitiativeRoll(diceRoll) {
     },
   };
 
-  // Render the chat card template
   const template =
     "modules/wod_v20_ru/templates/dialogs/roll-template.hbs";
   const html = await foundry.applications.handlebars.renderTemplate(

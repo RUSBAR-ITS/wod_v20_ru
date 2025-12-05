@@ -35,15 +35,21 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
+                    {{#if (eq result.rollResult "success")}}
+                        <div>Успехи: {{result.successes}}</div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "fail")}}
+                        <div><span class="danger">{{localize "wod.dice.fail"}}</span></div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "botch")}}
                         <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+                            <span class="danger">
+                                {{localize "wod.dice.botch"}}{{#if result.botchDegree}}: {{result.botchDegree}}{{/if}}
+                            </span>
                         </div>
                     {{/if}}
-                    <div>
-                        {{result.successes}}
-                    </div>
 
                     {{!-- Fate summary for this result --}}
                     {{#if result.fate}}
@@ -121,15 +127,21 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
+                    {{#if (eq result.rollResult "success")}}
+                        <div>Успехи: {{result.successes}}</div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "fail")}}
+                        <div><span class="danger">{{localize "wod.dice.fail"}}</span></div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "botch")}}
                         <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+                            <span class="danger">
+                                {{localize "wod.dice.botch"}}{{#if result.botchDegree}}: {{result.botchDegree}}{{/if}}
+                            </span>
                         </div>
                     {{/if}}
-                    <div>
-                        {{result.successes}}
-                    </div>
 
                     {{!-- Fate summary for this result --}}
                     {{#if result.fate}}
@@ -188,15 +200,21 @@
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
                 <div class="tray-success-area">
-                    {{#if (eq result.rolledAnySuccesses false)}}                    
+                    {{#if (eq result.rollResult "success")}}
+                        <div>Успехи: {{result.successes}}</div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "fail")}}
+                        <div><span class="danger">{{localize "wod.dice.fail"}}</span></div>
+                    {{/if}}
+
+                    {{#if (eq result.rollResult "botch")}}
                         <div>
-                            {{#if (eq result.rollResult "fail")}}<span class="danger">{{localize "wod.dice.fail"}}</span>{{/if}}
-                            {{#if (eq result.rollResult "botch")}}<span class="danger">{{localize "wod.dice.botch"}}</span>{{/if}}
+                            <span class="danger">
+                                {{localize "wod.dice.botch"}}{{#if result.botchDegree}}: {{result.botchDegree}}{{/if}}
+                            </span>
                         </div>
                     {{/if}}
-                    <div>
-                        {{result.successes}}
-                    </div>
 
                     {{!-- Fate summary for this result --}}
                     {{#if result.fate}}

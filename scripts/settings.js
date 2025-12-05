@@ -5,11 +5,12 @@
 console.log("Fate Settings | Loading module");
 
 export const FATE_SETTINGS = {
-    ENABLED: "fateEnabled"
+    ENABLED: "fateEnabled",
+    EVIL_BOTCHES: "evilBotches"
 };
 
 export function isFateEnabled() {
-    // Проверяем, инициализирована ли игра
+    // Check if game is initialized
     if (!game.settings) {
         console.log("Fate Settings | game.settings not available yet");
         return false;
@@ -20,23 +21,51 @@ export function isFateEnabled() {
     return enabled || false;
 }
 
-// Register setting
+export function isEvilBotchesEnabled() {
+    // Check if game is initialized
+    if (!game.settings) {
+        console.log("Fate Settings | game.settings not available yet (evil botches)");
+        return false;
+    }
+
+    const enabled = game.settings.get("wod_v20_ru", FATE_SETTINGS.EVIL_BOTCHES);
+    console.log(`Fate Settings | isEvilBotchesEnabled: ${enabled}`);
+    return enabled || false;
+}
+
+// Register settings
 function registerSettings() {
     console.log("Fate Settings | Registering settings");
     
     game.settings.register("wod_v20_ru", FATE_SETTINGS.ENABLED, {
-        name: "Enable Fate System",
-        hint: "Adds Fate track for vampire characters (identical to Willpower)",
+        name: game.i18n.localize("WOD20RU.Settings-FateEnabled-Name"),
+        hint: game.i18n.localize("WOD20RU.Settings-FateEnabled-Hint"),
         scope: "world",
         config: true,
         type: Boolean,
-        default: false, // По умолчанию выключено
+        default: false, // Disabled by default
         onChange: value => {
             console.log(`Fate Settings | Fate enabled changed to: ${value}`);
-            // При изменении настройки нужно перезагрузить мир
-            if (value) {
-                ui.notifications.info("Fate system enabled. Please reload the world to apply changes.");
-            }
+            // Suggest reloading the world after changing this setting
+            ui.notifications.info(
+                game.i18n.localize("WOD20RU.Settings-FateEnabled-Notification")
+            );
+        }
+    });
+
+    game.settings.register("wod_v20_ru", FATE_SETTINGS.EVIL_BOTCHES, {
+        name: game.i18n.localize("WOD20RU.Settings-EvilBotches-Name"),
+        hint: game.i18n.localize("WOD20RU.Settings-EvilBotches-Hint"),
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false, // Disabled by default
+        onChange: value => {
+            console.log(`Fate Settings | Evil botches enabled changed to: ${value}`);
+            // Suggest reloading the world after changing this setting
+            ui.notifications.info(
+                game.i18n.localize("WOD20RU.Settings-EvilBotches-Notification")
+            );
         }
     });
 }
