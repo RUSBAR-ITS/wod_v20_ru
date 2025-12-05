@@ -67,8 +67,20 @@
                 </div>
 
                 <div>     
-                    {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                    {{#each result.dices as |dice key|}}
+                        {{#if dice.isFate}}
+                            <img
+                                class="wod-svg wodru-dice-fate"
+                                src='data:image/svg+xml;utf8,{{SvgHtmlFate "dice" dice "fate"}}'
+                                title="{{dice.value}}"
+                            >
+                        {{else}}
+                            <img
+                                class="wod-svg"
+                                src='data:image/svg+xml;utf8,{{SvgHtml "dice" dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}'
+                                title="{{dice.value}}"
+                            >
+                        {{/if}}
                     {{/each}}
                 </div>
             </div>
@@ -87,8 +99,20 @@
 
         {{#each data.multipleresult as |result key|}}
             <div class="tray-roll-area">
-                {{#each result.dices as |dice key|}}   
-                    <img class="wod-svg" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                {{#each result.dices as |dice key|}}
+                    {{#if dice.isFate}}
+                        <img
+                            class="wod-svg wodru-dice-fate"
+                            src='data:image/svg+xml;utf8,{{SvgHtmlFate "dice" dice "fate"}}'
+                            title="{{dice.value}}"
+                        >
+                    {{else}}
+                        <img
+                            class="wod-svg"
+                            src='data:image/svg+xml;utf8,{{SvgHtml "dice" dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}'
+                            title="{{dice.value}}"
+                        >
+                    {{/if}}
                 {{/each}}
             </div>
         {{/each}}
@@ -159,8 +183,20 @@
                 </div>
 
                 <div>
-                    {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                    {{#each result.dices as |dice key|}}
+                        {{#if dice.isFate}}
+                            <img
+                                class="wod-svg wodru-dice-fate"
+                                src='data:image/svg+xml;utf8,{{SvgHtmlFate "dice" dice "fate"}}'
+                                title="{{dice.value}}"
+                            >
+                        {{else}}
+                            <img
+                                class="wod-svg"
+                                src='data:image/svg+xml;utf8,{{SvgHtml "dice" dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}'
+                                title="{{dice.value}}"
+                            >
+                        {{/if}}
                     {{/each}}
                 </div>
             </div>            
@@ -232,8 +268,20 @@
                 </div>
 
                 <div>
-                    {{#each result.dices as |dice key|}}   
-                        <img class="wod-svg{{#if dice.isFate}} wodru-dice-fate{{/if}}" src='data:image/svg+xml;utf8,{{SvgHtml 'dice' dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}' title="{{dice.value}}">
+                    {{#each result.dices as |dice key|}}
+                        {{#if dice.isFate}}
+                            <img
+                                class="wod-svg wodru-dice-fate"
+                                src='data:image/svg+xml;utf8,{{SvgHtmlFate "dice" dice "fate"}}'
+                                title="{{dice.value}}"
+                            >
+                        {{else}}
+                            <img
+                                class="wod-svg"
+                                src='data:image/svg+xml;utf8,{{SvgHtml "dice" dice ../../data.actor.type ../../data.actor.system.settings.variantsheet}}'
+                                title="{{dice.value}}"
+                            >
+                        {{/if}}
                     {{/each}}
                 </div>
             </div>            

@@ -72,7 +72,10 @@
     "scripts/fate-hooks-dialog-item.js",
     "scripts/fate-patch-dialog-item.js",
     "scripts/wodru-dice-so-nice.js",
-    "scripts/fate-bootstrap.js"
+    "scripts/fate-bootstrap.js",
+    "scripts/emerald-icons.js",
+    "scripts/fate-handlebars-helpers.js",
+    "scripts/fate-dice-generator.js"
   ],
 
   "styles": [
