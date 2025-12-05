@@ -59,6 +59,12 @@ export const registerFateHandlebarsHelpers = function () {
 	});
 };
 
+// Зарегистрировать хелпер на этапе init Foundry
+Hooks.once("init", () => {
+    console.log("WOD20RU | Registering Fate Handlebars helpers");
+    registerFateHandlebarsHelpers();
+});
+
 export default {
 	registerFateHandlebarsHelpers
 };

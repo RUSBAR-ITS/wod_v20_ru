@@ -1,6 +1,6 @@
 // file: modules/wod_v20_ru/scripts/fate-dice-generator.js
 // Adjust path to IconHelper if needed
-import IconHelper from "./icons.js";
+import IconHelper from "/systems/worldofdarkness/module/scripts/icons.js";
 
 /**
  * Build raw SVG string for a Fate die face.
@@ -11,14 +11,19 @@ import IconHelper from "./icons.js";
  * @returns {string}
  */
 function buildFateDieSvg(face, type, size = 64) {
-  const bg = IconHelper._getTypeColor(type);
-  const stroke = type.toLowerCase() === "black" ? "#ffffff" : "#000000";
-  const symbolColor = "#ffffff";
+  // Фиксированная изумрудная палитра, игнорируем type для цвета
+  const emeraldBase   = "#003b2f"; // фон квадрата
+  const emeraldStroke = "#00c896"; // рамка
+  const gold          = "#FFD700"; // символ (+/−/точка)
+
+  const bg = emeraldBase;
+  const stroke = emeraldStroke;
+  const symbolColor = gold;
 
   let symbol = "";
   const symbolSize = size * 0.55;
   const fontX = size / 2;
-  const fontY = size / 2 + size * 0.03; // slight vertical tweak
+  const fontY = size / 2 + size * 0.03;
 
   switch (face) {
     case "plus":
@@ -33,7 +38,6 @@ function buildFateDieSvg(face, type, size = 64) {
       break;
     case "blank":
     default:
-      // For blank, draw a subtle dot in the center instead of text
       symbol = `<circle cx="${fontX}" cy="${fontY}" r="${size * 0.06}" fill="${symbolColor}" />`;
       break;
   }

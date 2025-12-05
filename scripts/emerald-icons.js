@@ -1,13 +1,13 @@
 // emerald-icons.js
 // Emerald Fate d10 icons (0–9), based on system xd10 from icons.js
 
-import IconHelper from "./icons.js";
+import IconHelper from "/systems/worldofdarkness/module/scripts/icons.js";
 
 export default class EmeraldFateIconHelper {
     /**
      * Get single emerald fate d10 icon
      * @param {string} icon   - "fatexd10"
-     * @param {string} type   - actor type (kept for API compatibility, but colors are fixed emerald/gold)
+     * @param {any}    type   - actor type / sheet type (игнорируем для цветов)
      * @param {number} number - digit 0–9
      * @returns {string} SVG string
      */
@@ -25,20 +25,20 @@ export default class EmeraldFateIconHelper {
 
     /**
      * Icon list for emerald fate dice: fate0 … fate9
-     * @param {string} race - kept for API compatibility, not used for colors
+     * @param {any} sheettype - оставлен для API-совместимости, но для цвета не используется
      */
-    static GetIconlist(race) {
+    static GetIconlist(sheettype) {
         return {
-            fate0: this.GetIcon("fatexd10", race, 0),
-            fate1: this.GetIcon("fatexd10", race, 1),
-            fate2: this.GetIcon("fatexd10", race, 2),
-            fate3: this.GetIcon("fatexd10", race, 3),
-            fate4: this.GetIcon("fatexd10", race, 4),
-            fate5: this.GetIcon("fatexd10", race, 5),
-            fate6: this.GetIcon("fatexd10", race, 6),
-            fate7: this.GetIcon("fatexd10", race, 7),
-            fate8: this.GetIcon("fatexd10", race, 8),
-            fate9: this.GetIcon("fatexd10", race, 9),
+            fate0: this.GetIcon("fatexd10", sheettype, 0),
+            fate1: this.GetIcon("fatexd10", sheettype, 1),
+            fate2: this.GetIcon("fatexd10", sheettype, 2),
+            fate3: this.GetIcon("fatexd10", sheettype, 3),
+            fate4: this.GetIcon("fatexd10", sheettype, 4),
+            fate5: this.GetIcon("fatexd10", sheettype, 5),
+            fate6: this.GetIcon("fatexd10", sheettype, 6),
+            fate7: this.GetIcon("fatexd10", sheettype, 7),
+            fate8: this.GetIcon("fatexd10", sheettype, 8),
+            fate9: this.GetIcon("fatexd10", sheettype, 9),
         };
     }
 
@@ -49,8 +49,13 @@ export default class EmeraldFateIconHelper {
      *  - number text: gold
      */
     static _getFatexD10(number, type, height = 30, width = 30) {
+        // Гарантируем, что в системный IconHelper пойдёт СТРОКА
+        const safeType = (typeof type === "string" && type.length > 0)
+            ? type
+            : "mortal"; // дефолтный тип, можешь поменять на "vampire", если хочешь
+
         // Берём БАЗОВЫЙ xd10 из системного IconHelper — форма и верстка 1:1 как в системе
-        let svg = IconHelper.GetIcon("xd10", type, number);
+        let svg = IconHelper.GetIcon("xd10", safeType, number);
 
         const emeraldBase  = "#003b2f"; // фон (поле за кубом)
         const emeraldLight = "#00a36c"; // первая грань
@@ -63,12 +68,11 @@ export default class EmeraldFateIconHelper {
             `$1${emeraldBase}$2`
         );
 
-        // 2) Перекрашиваем белые элементы:
-        //    в системном xd10 белым (#fff) идут:
+        // 2) Перекрашиваем белые элементы (#fff):
+        //    в системном xd10 белым идут:
         //      - 1-й path: одна грань
         //      - 2-й path: другая грань/контур
         //      - text: цифра
-        //    Используем счётчик, чтобы дать двум первым – изумруд, третьему – золото.
         let whiteIndex = 0;
         svg = svg.replace(/fill="#fff"/g, () => {
             whiteIndex += 1;
@@ -77,7 +81,7 @@ export default class EmeraldFateIconHelper {
             return `fill="${gold}"`; // текст с цифрой
         });
 
-        // 3) На всякий случай подправляем высоту/ширину, если хочешь отличать размер
+        // 3) Аккуратно фиксируем размер
         svg = svg.replace(
             /style="border-radius: 3px; height: \d+px; width: \d+px;"/,
             `style="border-radius: 3px; height: ${height}px; width: ${width}px;"`
