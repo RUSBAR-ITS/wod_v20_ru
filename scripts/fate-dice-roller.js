@@ -65,33 +65,6 @@ function toInt(value) {
 }
 
 /**
- * Best-effort detection for "pure Fate roll".
- * Pure Fate rolls must NOT get extra Fate dice injected.
- *
- * We primarily rely on diceRoll.isFate, but also add fallbacks because
- * some code paths may not propagate flags reliably.
- *
- * @param {any} diceRoll
- * @returns {boolean}
- */
-function isPureFateRoll(diceRoll) {
-  if (!diceRoll) return false;
-
-  // Primary explicit marker.
-  if (diceRoll.isFate === true) return true;
-
-  // Fallback marker: some integrations might set a dedicated meta block.
-  if (diceRoll._wodru_fateMeta?.baseDice === 0 && diceRoll._wodru_fateMeta?.fateDice > 0) {
-    return true;
-  }
-
-  // Fallback marker: any explicit roll flag used by legacy code.
-  if (diceRoll._wodru_isFate === true) return true;
-
-  return false;
-}
-
-/**
  * Build the patched DiceRoller that adds Fate dice when requested.
  * Fate dice are mechanically identical to normal dice (same success / botch /
  * exploding rules). The only difference is that we *also* track how many
@@ -107,7 +80,9 @@ function makePatchedDiceRoller(originalFn) {
         hasActor: !!diceRoll?.actor,
         origin: diceRoll?.origin,
         isFateRoll: diceRoll?.isFate === true,
-        numDices: diceRoll?.numDices
+        numDices: diceRoll?.numDices,
+        fateDice: diceRoll?.fateDice,
+        useFate: diceRoll?.useFate
       });
 
       // If Fate feature is disabled globally, do not touch the roll.
@@ -131,23 +106,6 @@ function makePatchedDiceRoller(originalFn) {
         return WODRUDiceRoller(diceRoll);
       }
 
-      // IMPORTANT:
-      // Pure Fate roll must not consume fateState and must not inject extra dice.
-      if (isPureFateRoll(diceRoll)) {
-        console.debug(
-          "Fate DiceRoller | Pure Fate roll detected, skipping Fate injection"
-        );
-
-        // Ensure we do not accidentally treat this as a "Use Fate" roll downstream.
-        try {
-          diceRoll.useFate = false;
-        } catch (_e) {
-          // Ignore
-        }
-
-        return WODRUDiceRoller(diceRoll);
-      }
-
       const system = actor.system ?? actor.data?.data ?? {};
       const fate = system.fate;
 
@@ -159,6 +117,56 @@ function makePatchedDiceRoller(originalFn) {
       }
 
       const baseFateDice = toInt(fate.value);
+
+      // -------------------------------------------------------------------
+      // Pure Fate roll mode:
+      // When the sheet Fate banner creates a "pure Fate roll", it currently
+      // constructs GeneralRoll("willpower", "noability", actor) but sets:
+      //   roll.isFate = true
+      //   roll.useFate = true
+      //   roll.fateDice = <fateValue>
+      //
+      // The system would otherwise roll Willpower dice (e.g. 7), which is NOT
+      // what we want. For a pure Fate roll we must roll ONLY Fate dice and
+      // mark ALL slots as Fate in the slot-based algorithm.
+      // -------------------------------------------------------------------
+      if (diceRoll.isFate === true) {
+        const fateDiceToRoll = toInt(diceRoll.fateDice ?? baseFateDice);
+
+        console.log("Fate DiceRoller | Pure Fate roll detected, forcing Fate-only pool", {
+          actor: { id: actor.id, name: actor.name },
+          origin: diceRoll.origin,
+          requestedFateDice: diceRoll.fateDice,
+          actorFateValue: fate.value,
+          fateDiceToRoll
+        });
+
+        if (!fateDiceToRoll) {
+          console.warn(
+            "Fate DiceRoller | Pure Fate roll requested but fateDiceToRoll is 0, delegating to original"
+          );
+          return WODRUDiceRoller(diceRoll);
+        }
+
+        // Force the pool to be Fate-only (no base dice at all).
+        diceRoll.numDices = fateDiceToRoll;
+
+        const fateMeta = {
+          enabled: true,
+          baseDice: 0,
+          fateDice: fateDiceToRoll,
+          totalDice: fateDiceToRoll,
+          actorId: actor.id
+        };
+
+        diceRoll.useFate = true;
+        diceRoll._wodru_fateMeta = fateMeta;
+        diceRoll._wodru_usedFate = fateMeta;
+
+        // Do NOT consume fateState here — pure Fate roll is explicit and should
+        // not depend on transient dialog checkbox state.
+        return WODRUDiceRoller(diceRoll);
+      }
 
       // Read the transient UI state for this actor (set by dialog patch).
       // state.useFate: whether user ticked "Use Fate" in the dialog.
