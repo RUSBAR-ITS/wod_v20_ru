@@ -104,7 +104,9 @@ function installDialogGeneralRollPatch() {
         });
 
         if (actor) {
-          // Flags coming from the dialog (set by fate-hooks-dialog-checkbox.js).
+          // Flags coming from the dialog.
+          // useFate: checkbox in normal WoD rolls (add Fate dice to pool)
+          // isFate: pure Fate roll (Fate dice ONLY, Fate rules ONLY)
           const useFate = !!rollObject.useFate;
           const isPureFate = rollObject.isFate === true;
 
@@ -129,10 +131,33 @@ function installDialogGeneralRollPatch() {
             fateDice
           });
 
-          // IMPORTANT:
-          // Do NOT push Fate state for pure Fate rolls.
-          // Pure Fate already uses Fate as the base pool and must not add Fate again.
-          if (useFate && fateDice > 0 && !isPureFate) {
+          // -----------------------------------------------------------------
+          // PURE FATE FLAGS (IMPORTANT)
+          // Pure Fate rolls must be processed by Fate rules and displayed
+          // with Fate dice visuals only. This module cannot enforce visuals
+          // itself, but we can set explicit markers for downstream DiceRoller.
+          // -----------------------------------------------------------------
+          if (isPureFate) {
+            // Explicitly mark this roll as "Fate-only" for any downstream roller.
+            rollObject._wodru_fateOnly = true;
+            rollObject._wodru_forceFateDice = true;
+
+            // Provide a normalized Fate dice count for Fate-only mode.
+            // If the dialog already computed a pool, downstream can decide which
+            // field to trust; this is just a reliable reference.
+            rollObject._wodru_fateDice = fateDice;
+
+            // Pure Fate must NOT also consume/produce transient "add Fate dice"
+            // state; it is already a Fate pool.
+            const consumed = fateState.consume(actor.id);
+            console.log("Fate Patch | Pure Fate roll detected, state cleared", {
+              actorId: actor.id,
+              actorName: actor.name,
+              fateDice,
+              previousState: consumed
+            });
+          } else if (useFate && fateDice > 0) {
+            // Normal roll + "Use Fate" => add Fate dice to the WoD pool.
             fateState.set(actor.id, { useFate: true, fateDice });
             console.log("Fate Patch | fateState.set applied for actor", {
               actorId: actor.id,
@@ -141,7 +166,7 @@ function installDialogGeneralRollPatch() {
               fateDice
             });
           } else {
-            // Either Fate is not used, zero dice, or this is a pure Fate roll.
+            // Either Fate is not used, or there are zero dice.
             // Consume any previous state to avoid stale data.
             const consumed = fateState.consume(actor.id);
             console.log("Fate Patch | Fate state cleared / not applied", {
