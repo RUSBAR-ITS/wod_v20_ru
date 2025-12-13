@@ -1,43 +1,22 @@
 // scripts/fate-dice-roller.js
-// Wrapper around the original World of Darkness DiceRoller
-// to inject Fate dice when the user opted to "Use Fate" for a roll.
+// Variant A:
+// - No fateState.
+// - No dialog patch dependency.
+// - We only react to flags already present on diceRoll:
+//    * diceRoll.isFate === true  -> PURE Fate roll (Fate-only pool)
+//    * diceRoll.useFate === true -> add Fate dice (only if diceRoll.fateDice or actor fate value is available)
 //
-// New architecture (aligned with slot-based Fate algorithm):
-// - This module ONLY defines the patching logic and exports initFateDiceRoller().
-// - It does NOT change WoD mechanics: Fate dice are regular d10s in the pool.
-// - It enlarges the dice pool when Fate is used and annotates the roll with
-//   metadata (baseDice, fateDice, totalDice, actorId) for later processing
-//   in the roll implementation / chat template.
-//
-// Strategy:
-//  1) Try to locate the system's DiceRoller:
-//     - from game.worldofdarkness.DiceRoller,
-//     - from globalThis.DiceRoller,
-//     - or by importing the roll-dice module from known paths.
-//  2) Wrap DiceRoller with our logic that consults fateState for the actor.
-//  3) When Fate is requested, increase diceRoll.numDices by fateDice, and
-//     store a _wodru_fateMeta block on diceRoll:
-//        {
-//          enabled: true,
-//          baseDice: <original numDices>,
-//          fateDice: <added Fate dice>,
-//          totalDice: <base + fate>,
-//          actorId: <actor.id>
-//        }
-//     This metadata will later be used by a forked DiceRoller implementation
-//     to:
-//        - treat all dice mechanically the same,
-//        - but mark last `fateDice` slots as Fate,
-//        - count Fate 1s and 10s separately,
-//        - render "Fate Success / Fate Botch" in chat.
-//  4) Expose both original and patched versions in convenient namespaces.
-//  5) If anything fails, log the problem and leave DiceRoller unmodified.
+// Important:
+// - This module does NOT implement Fate rules itself. It only prepares diceRoll
+//   so that our forked WoDRU DiceRoller (wodru-dice-roller.js) can:
+//    * color Fate dice via Dice So Nice colorset,
+//    * count Fate 1s/10s and compute fateNet,
+//    * render Fate summary in chat.
 
 import { isFateEnabled } from "./settings.js";
-import { fateState } from "./fate-state.js";
 import { DiceRoller as WODRUDiceRoller } from "./wodru-dice-roller.js";
 
-console.log("Fate DiceRoller | Loading module");
+console.log("Fate DiceRoller | Loading module (Variant A)");
 
 const POSSIBLE_PATHS = [
   "/systems/worldofdarkness/module/scripts/roll-dice.js",
@@ -65,10 +44,61 @@ function toInt(value) {
 }
 
 /**
- * Build the patched DiceRoller that adds Fate dice when requested.
- * Fate dice are mechanically identical to normal dice (same success / botch /
- * exploding rules). The only difference is that we *also* track how many
- * dice were added as Fate in order to post-process them later.
+ * Read actor Fate value (system.fate.value) safely.
+ * @param {any} actor
+ * @returns {number}
+ */
+function getActorFateValue(actor) {
+  const system = actor?.system ?? actor?.data?.data ?? {};
+  const fate = system?.fate;
+  return toInt(fate?.value ?? 0);
+}
+
+/**
+ * Ensure targetlist exists and is consistent with diceRoll.numDices.
+ * The WoD system sometimes relies on targetlist; our forked DiceRoller
+ * also supports it.
+ *
+ * @param {any} diceRoll
+ */
+function normalizeTargetList(diceRoll) {
+  if (!diceRoll) return;
+
+  // If system already created targetlist, keep it.
+  if (Array.isArray(diceRoll.targetlist) && diceRoll.targetlist.length > 0) {
+    // Some callers store numDices per-target; do not forcibly overwrite.
+    return;
+  }
+
+  // Create a single default target if missing.
+  diceRoll.targetlist = [{ numDices: toInt(diceRoll.numDices) }];
+}
+
+/**
+ * Build Fate metadata block consumed by wodru-dice-roller.js.
+ *
+ * @param {any} actor
+ * @param {number} baseDice
+ * @param {number} fateDice
+ * @param {boolean} fateOnly
+ */
+function buildFateMeta(actor, baseDice, fateDice, fateOnly) {
+  const totalDice = baseDice + fateDice;
+
+  return {
+    enabled: true,
+    baseDice,
+    fateDice,
+    totalDice,
+    actorId: actor?.id ?? null,
+    // Optional: allows wodru-dice-roller.js to treat pure Fate specially later
+    // if you decide to add fateOnly result semantics.
+    fateOnly: fateOnly === true
+  };
+}
+
+/**
+ * Build the patched DiceRoller.
  *
  * @param {(diceRoll: any) => any | Promise<any>} originalFn
  */
@@ -76,140 +106,105 @@ function makePatchedDiceRoller(originalFn) {
   return async function PatchedDiceRoller(diceRoll) {
     try {
       console.debug("Fate DiceRoller | PatchedDiceRoller invoked", {
-        isFateEnabled: isFateEnabled(),
-        hasActor: !!diceRoll?.actor,
+        enabled: isFateEnabled(),
         origin: diceRoll?.origin,
-        isFateRoll: diceRoll?.isFate === true,
+        hasActor: !!diceRoll?.actor,
+        isFate: diceRoll?.isFate === true,
+        useFate: diceRoll?.useFate === true,
         numDices: diceRoll?.numDices,
-        fateDice: diceRoll?.fateDice,
-        useFate: diceRoll?.useFate
+        fateDice: diceRoll?.fateDice
       });
 
-      // If Fate feature is disabled globally, do not touch the roll.
+      // Global switch off -> do not touch anything.
       if (!isFateEnabled()) {
         return WODRUDiceRoller(diceRoll);
       }
 
       const actor = diceRoll?.actor;
       if (!actor) {
-        console.warn(
-          "Fate DiceRoller | No actor on diceRoll, delegating to original"
-        );
+        console.warn("Fate DiceRoller | No actor on diceRoll, delegating");
         return WODRUDiceRoller(diceRoll);
       }
 
-      // Skip damage rolls entirely — Fate is not applied to damage.
-      if (diceRoll.origin === "damage") {
-        console.debug(
-          "Fate DiceRoller | Damage roll detected, skipping Fate injection"
-        );
+      // Never apply Fate to damage rolls.
+      if (diceRoll?.origin === "damage") {
+        console.debug("Fate DiceRoller | Damage roll detected, skip Fate");
         return WODRUDiceRoller(diceRoll);
       }
 
-      const system = actor.system ?? actor.data?.data ?? {};
-      const fate = system.fate;
-
-      if (!fate) {
-        console.debug(
-          "Fate DiceRoller | Actor has no system.fate block, delegating to original"
-        );
-        return WODRUDiceRoller(diceRoll);
-      }
-
-      const baseFateDice = toInt(fate.value);
+      const actorFateValue = getActorFateValue(actor);
 
       // -------------------------------------------------------------------
-      // Pure Fate roll mode:
-      // When the sheet Fate banner creates a "pure Fate roll", it currently
-      // constructs GeneralRoll("willpower", "noability", actor) but sets:
-      //   roll.isFate = true
-      //   roll.useFate = true
-      //   roll.fateDice = <fateValue>
-      //
-      // The system would otherwise roll Willpower dice (e.g. 7), which is NOT
-      // what we want. For a pure Fate roll we must roll ONLY Fate dice and
-      // mark ALL slots as Fate in the slot-based algorithm.
+      // PURE Fate roll (sheet banner / header click).
+      // Contract for Variant A:
+      // - Roll ONLY Fate dice.
+      // - Mark ALL dice as Fate in slot logic by setting baseDice=0
+      //   and fateDice=numDices.
+      // - Do not depend on any external transient state.
       // -------------------------------------------------------------------
-      if (diceRoll.isFate === true) {
-        const fateDiceToRoll = toInt(diceRoll.fateDice ?? baseFateDice);
+      if (diceRoll?.isFate === true) {
+        const fateDiceToRoll = toInt(diceRoll?.fateDice ?? actorFateValue);
 
-        console.log("Fate DiceRoller | Pure Fate roll detected, forcing Fate-only pool", {
+        console.log("Fate DiceRoller | PURE Fate roll -> forcing Fate-only pool", {
           actor: { id: actor.id, name: actor.name },
-          origin: diceRoll.origin,
-          requestedFateDice: diceRoll.fateDice,
-          actorFateValue: fate.value,
+          requestedFateDice: diceRoll?.fateDice,
+          actorFateValue,
           fateDiceToRoll
         });
 
-        if (!fateDiceToRoll) {
-          console.warn(
-            "Fate DiceRoller | Pure Fate roll requested but fateDiceToRoll is 0, delegating to original"
-          );
+        if (fateDiceToRoll <= 0) {
+          console.warn("Fate DiceRoller | PURE Fate requested but fateDiceToRoll <= 0, delegating");
           return WODRUDiceRoller(diceRoll);
         }
 
-        // Force the pool to be Fate-only (no base dice at all).
+        // Force Fate-only pool:
+        // - numDices must be exactly Fate dice count
+        // - wound penalty must NOT reduce pure Fate unless you explicitly want that
         diceRoll.numDices = fateDiceToRoll;
+        diceRoll.woundpenalty = 0;
 
-        const fateMeta = {
-          enabled: true,
-          baseDice: 0,
-          fateDice: fateDiceToRoll,
-          totalDice: fateDiceToRoll,
-          actorId: actor.id
-        };
-
+        // Make sure roll is marked as Fate
         diceRoll.useFate = true;
+        diceRoll.fateDice = fateDiceToRoll;
+
+        // IMPORTANT: baseDice=0 so that all slots become Fate slots
+        const fateMeta = buildFateMeta(actor, 0, fateDiceToRoll, true);
+
         diceRoll._wodru_fateMeta = fateMeta;
         diceRoll._wodru_usedFate = fateMeta;
 
-        // Do NOT consume fateState here — pure Fate roll is explicit and should
-        // not depend on transient dialog checkbox state.
+        // Ensure the target list exists so we don't accidentally roll old numDices
+        normalizeTargetList(diceRoll);
+
         return WODRUDiceRoller(diceRoll);
       }
 
-      // Read the transient UI state for this actor (set by dialog patch).
-      // state.useFate: whether user ticked "Use Fate" in the dialog.
-      // state.fateDice: how many Fate dice to add for THIS roll (can differ from actor's fate.value).
-      const state =
-        fateState.consume(actor.id) ?? { useFate: false, fateDice: baseFateDice };
-
-      // Also honour diceRoll.useFate if some future integration decides to set it.
-      const useFate = !!state.useFate || !!diceRoll.useFate;
-
-      console.debug("Fate DiceRoller | Fate state for this roll", {
-        actorId: actor.id,
-        actorName: actor.name,
-        useFate,
-        stateFateDice: state.fateDice,
-        actorFateValue: fate.value,
-        origin: diceRoll.origin
-      });
-
+      // -------------------------------------------------------------------
+      // Normal roll with Fate enabled (Variant A):
+      // - We ONLY honor diceRoll.useFate and diceRoll.fateDice.
+      // - We do NOT read fateState.
+      //
+      // This will work ONLY if the caller actually sets diceRoll.useFate=true.
+      // If your checkbox UI currently does NOT persist it into diceRoll, then
+      // this branch will never trigger (by design in Variant A).
+      // -------------------------------------------------------------------
+      const useFate = diceRoll?.useFate === true;
       if (!useFate) {
-        // User didn't request Fate for this roll.
         return WODRUDiceRoller(diceRoll);
       }
 
-      // Number of Fate dice to add: prefer state.fateDice, then actor's Fate value.
-      const fateDiceToAdd = toInt(state.fateDice ?? baseFateDice);
-
-      if (!fateDiceToAdd) {
-        console.warn(
-          "Fate DiceRoller | useFate=true but fateDiceToAdd is 0, delegating to original"
-        );
+      const fateDiceToAdd = toInt(diceRoll?.fateDice ?? actorFateValue);
+      if (fateDiceToAdd <= 0) {
+        console.warn("Fate DiceRoller | useFate=true but fateDiceToAdd <= 0, delegating");
         return WODRUDiceRoller(diceRoll);
       }
 
-      // Ensure numDices is numeric.
-      const baseDice = toInt(diceRoll.numDices);
+      const baseDice = toInt(diceRoll?.numDices);
       const newTotal = baseDice + fateDiceToAdd;
 
-      // Fate dice are mechanically identical to normal ones:
-      // we simply increase the pool by `fateDiceToAdd`.
-      console.log("Fate DiceRoller | Applying Fate dice to roll", {
+      console.log("Fate DiceRoller | Normal roll -> adding Fate dice", {
         actor: { id: actor.id, name: actor.name },
-        origin: diceRoll.origin,
+        origin: diceRoll?.origin,
         baseDice,
         fateDiceToAdd,
         newTotal
@@ -217,37 +212,15 @@ function makePatchedDiceRoller(originalFn) {
 
       diceRoll.numDices = newTotal;
 
-      // Annotate the roll with Fate metadata so that a forked DiceRoller /
-      // chat template can:
-      //  - know how many *base* dice there were,
-      //  - know how many *Fate* dice were added,
-      //  - treat all dice identically for mechanics,
-      //  - but mark last `fateDice` slots as Fate when building results.
-      const fateMeta = {
-        enabled: true,
-        baseDice,
-        fateDice: fateDiceToAdd,
-        totalDice: newTotal,
-        actorId: actor.id
-      };
-
-      diceRoll.useFate = true;
+      const fateMeta = buildFateMeta(actor, baseDice, fateDiceToAdd, false);
       diceRoll._wodru_fateMeta = fateMeta;
-
-      // Backward-compatible alias for any existing code that already uses
-      // _wodru_usedFate.
       diceRoll._wodru_usedFate = fateMeta;
 
-      // NOTE:
-      // We do NOT modify actor.system.fate.used here — spending the resource
-      // should be handled elsewhere (e.g., via roll result or a separate hook).
+      normalizeTargetList(diceRoll);
 
       return WODRUDiceRoller(diceRoll);
     } catch (err) {
-      console.error(
-        "Fate DiceRoller | Error in patched DiceRoller, delegating to original",
-        err
-      );
+      console.error("Fate DiceRoller | Error in patched DiceRoller, delegating", err);
       return WODRUDiceRoller(diceRoll);
     }
   };
@@ -260,42 +233,23 @@ function makePatchedDiceRoller(originalFn) {
 async function tryImportOriginal() {
   for (const path of POSSIBLE_PATHS) {
     try {
-      console.debug(
-        "Fate DiceRoller | Attempting to import roll-dice module from path",
-        path
-      );
+      console.debug("Fate DiceRoller | Attempting import", path);
       const mod = await import(path);
       if (!mod) continue;
 
       if (typeof mod.DiceRoller === "function") {
-        console.log(
-          "Fate DiceRoller | Found DiceRoller export in module",
-          path
-        );
+        console.log("Fate DiceRoller | Found DiceRoller export", path);
         return { mod, fn: mod.DiceRoller };
       }
 
       if (typeof mod.default === "function") {
-        console.log(
-          "Fate DiceRoller | Found default DiceRoller export in module",
-          path
-        );
+        console.log("Fate DiceRoller | Found default export DiceRoller", path);
         return { mod, fn: mod.default };
       }
-
-      console.debug(
-        "Fate DiceRoller | Module imported but no DiceRoller function found",
-        path
-      );
     } catch (err) {
-      console.warn(
-        "Fate DiceRoller | Failed to import roll-dice module from path",
-        path,
-        err
-      );
+      console.warn("Fate DiceRoller | Import failed", path, err);
     }
   }
-
   return null;
 }
 
@@ -306,140 +260,80 @@ async function tryImportOriginal() {
 function findOriginalFromGlobals() {
   try {
     if (game.worldofdarkness?.DiceRoller) {
-      console.log(
-        "Fate DiceRoller | Using game.worldofdarkness.DiceRoller as original"
-      );
+      console.log("Fate DiceRoller | Using game.worldofdarkness.DiceRoller");
       return game.worldofdarkness.DiceRoller;
     }
-  } catch (_e) {
-    // Ignore
-  }
+  } catch (_e) {}
 
   try {
     if (typeof globalThis.DiceRoller === "function") {
-      console.log(
-        "Fate DiceRoller | Using globalThis.DiceRoller as original"
-      );
+      console.log("Fate DiceRoller | Using globalThis.DiceRoller");
       return globalThis.DiceRoller;
     }
-  } catch (_e) {
-    // Ignore
-  }
+  } catch (_e) {}
 
   return null;
 }
 
 /**
- * Install the patched DiceRoller, exposing both original and patched
- * in a few convenient locations.
+ * Install the patched DiceRoller.
  * @param {Function} originalFn
  * @param {any} sourceModule
  * @returns {boolean}
  */
 function installPatchWithOriginal(originalFn, sourceModule = null) {
   if (!originalFn || typeof originalFn !== "function") {
-    console.warn(
-      "Fate DiceRoller | installPatch: no original DiceRoller function available"
-    );
+    console.warn("Fate DiceRoller | installPatch: no original function");
     return false;
   }
 
   OriginalDiceRoller = originalFn;
   const patched = makePatchedDiceRoller(OriginalDiceRoller);
 
-  // Try to mutate the source module if it is writable (may silently fail).
+  // Attempt to replace exports (may fail in ESM, harmless).
   if (sourceModule && typeof sourceModule === "object") {
-    try {
-      sourceModule.DiceRoller = patched;
-      console.log(
-        "Fate DiceRoller | Replaced rollModule.DiceRoller (if writable)."
-      );
-    } catch (_e) {
-      // Ignore
-    }
-
-    try {
-      if ("default" in sourceModule) {
-        sourceModule.default = patched;
-        console.log(
-          "Fate DiceRoller | Replaced rollModule.default (if writable)."
-        );
-      }
-    } catch (_e) {
-      // Ignore
-    }
+    try { sourceModule.DiceRoller = patched; } catch (_e) {}
+    try { if ("default" in sourceModule) sourceModule.default = patched; } catch (_e) {}
   }
 
-  // Expose patched DiceRoller on game.worldofdarkness for compatibility.
+  // Expose in game namespace for debugging/compat.
   try {
     if (!game.worldofdarkness) game.worldofdarkness = {};
     game.worldofdarkness.OriginalDiceRoller = OriginalDiceRoller;
     game.worldofdarkness.DiceRoller = patched;
-  } catch (_e) {
-    // Ignore
-  }
+  } catch (_e) {}
 
-  // Also expose on globalThis for debugging / macros.
   try {
     globalThis.WOD20RU_OriginalDiceRoller = OriginalDiceRoller;
     globalThis.WOD20RU_DiceRoller = patched;
-  } catch (_e) {
-    // Ignore
-  }
+  } catch (_e) {}
 
-  console.log(
-    "Fate DiceRoller | DiceRoller successfully patched with Fate support.",
-    {
-      hasGameNamespace: !!game.worldofdarkness
-    }
-  );
+  console.log("Fate DiceRoller | Patch installed (Variant A)");
   return true;
 }
 
 /**
- * Public entry point – called by fate-bootstrap.js on the "ready" hook.
- * Attempts to locate and patch the system's DiceRoller.
+ * Public entry point – called by fate-bootstrap.js on "ready".
  */
 export async function initFateDiceRoller() {
-  console.log("Fate DiceRoller | initFateDiceRoller() called");
+  console.log("Fate DiceRoller | initFateDiceRoller() called (Variant A)");
 
   if (OriginalDiceRoller) {
-    console.log(
-      "Fate DiceRoller | OriginalDiceRoller already set, skipping re-initialization"
-    );
+    console.log("Fate DiceRoller | Already initialized, skipping");
     return;
   }
 
   try {
-    // 1) First, try to use already-registered globals.
     const fromGlobals = findOriginalFromGlobals();
-    if (fromGlobals && installPatchWithOriginal(fromGlobals, null)) {
-      console.log(
-        "Fate DiceRoller | Patch installed using global DiceRoller reference"
-      );
-      return;
-    }
+    if (fromGlobals && installPatchWithOriginal(fromGlobals, null)) return;
 
-    // 2) Fallback: import the roll-dice module directly.
     const result = await tryImportOriginal();
-    if (result && result.fn && installPatchWithOriginal(result.fn, result.mod)) {
-      console.log(
-        "Fate DiceRoller | Patch installed using imported roll-dice module"
-      );
-      return;
-    }
+    if (result && result.fn && installPatchWithOriginal(result.fn, result.mod)) return;
 
-    console.warn(
-      "Fate DiceRoller | Could not locate original DiceRoller - Fate dice injection will remain disabled."
-    );
+    console.warn("Fate DiceRoller | Could not locate original DiceRoller");
   } catch (err) {
-    console.error(
-      "Fate DiceRoller | Error while initializing DiceRoller patch",
-      err
-    );
+    console.error("Fate DiceRoller | init error", err);
   }
 }
 
-console.log(
-  "Fate DiceRoller | Module loaded (definition only, no patch yet)"
-);
+console.log("Fate DiceRoller | Module loaded (Variant A)");
