@@ -35,7 +35,7 @@
 
 import { isFateEnabled } from "./settings.js";
 import { fateState } from "./fate-state.js";
-import {DiceRoller as WODRUDiceRoller } from "./wodru-dice-roller.js";
+import { DiceRoller as WODRUDiceRoller } from "./wodru-dice-roller.js";
 
 console.log("Fate DiceRoller | Loading module");
 
@@ -62,6 +62,33 @@ function toInt(value) {
   const parsed = parseInt(value ?? 0, 10);
   if (Number.isNaN(parsed)) return 0;
   return parsed < 0 ? 0 : parsed;
+}
+
+/**
+ * Best-effort detection for "pure Fate roll".
+ * Pure Fate rolls must NOT get extra Fate dice injected.
+ *
+ * We primarily rely on diceRoll.isFate, but also add fallbacks because
+ * some code paths may not propagate flags reliably.
+ *
+ * @param {any} diceRoll
+ * @returns {boolean}
+ */
+function isPureFateRoll(diceRoll) {
+  if (!diceRoll) return false;
+
+  // Primary explicit marker.
+  if (diceRoll.isFate === true) return true;
+
+  // Fallback marker: some integrations might set a dedicated meta block.
+  if (diceRoll._wodru_fateMeta?.baseDice === 0 && diceRoll._wodru_fateMeta?.fateDice > 0) {
+    return true;
+  }
+
+  // Fallback marker: any explicit roll flag used by legacy code.
+  if (diceRoll._wodru_isFate === true) return true;
+
+  return false;
 }
 
 /**
@@ -104,11 +131,20 @@ function makePatchedDiceRoller(originalFn) {
         return WODRUDiceRoller(diceRoll);
       }
 
-      // Skip if this is a special pure Fate roll already handled elsewhere.
-      if (diceRoll.isFate === true) {
+      // IMPORTANT:
+      // Pure Fate roll must not consume fateState and must not inject extra dice.
+      if (isPureFateRoll(diceRoll)) {
         console.debug(
-          "Fate DiceRoller | Pure Fate roll (isFate === true), no extra Fate dice applied"
+          "Fate DiceRoller | Pure Fate roll detected, skipping Fate injection"
         );
+
+        // Ensure we do not accidentally treat this as a "Use Fate" roll downstream.
+        try {
+          diceRoll.useFate = false;
+        } catch (_e) {
+          // Ignore
+        }
+
         return WODRUDiceRoller(diceRoll);
       }
 

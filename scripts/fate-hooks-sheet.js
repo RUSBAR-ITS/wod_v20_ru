@@ -214,8 +214,11 @@ function onRenderActorSheet(app, html, data) {
       // Флаг "это Fate-бросок"
       roll.isFate = true;
 
-      // Локальное состояние Fate в самом объекте броска
-      roll.useFate = true;
+      // IMPORTANT:
+      // Pure Fate roll must NOT enable "add Fate to base dice"
+      roll.useFate = false;
+      
+      // Keep fateDice only as data/reference
       roll.fateDice = fateValue;
 
       console.log("Fate Hooks | Sheet Fate banner: GeneralRoll prepared", {

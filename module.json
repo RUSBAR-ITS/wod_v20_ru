@@ -2,7 +2,7 @@
   "id": "wod_v20_ru",
   "title": "World of Darkness 20th — Russian localization by RUSBAR + Fate",
   "description": "Unofficial Russian translation World of Darkness 20th edition for Foundry VTT by RUSBAR with Fate system expansion. This version is autotranslated by neural networks and may contain errors.",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13",

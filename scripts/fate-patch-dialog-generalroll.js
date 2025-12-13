@@ -106,6 +106,7 @@ function installDialogGeneralRollPatch() {
         if (actor) {
           // Flags coming from the dialog (set by fate-hooks-dialog-checkbox.js).
           const useFate = !!rollObject.useFate;
+          const isPureFate = rollObject.isFate === true;
 
           // Prefer explicit fateDice from dialog, fall back to actor.system.fate.value.
           let fateDice = 0;
@@ -122,12 +123,16 @@ function installDialogGeneralRollPatch() {
 
           console.log("Fate Patch | Computed Fate values from dialog", {
             useFate,
+            isPureFate,
             dialogFateDice: rollObject.fateDice,
             actorFateValue: actor.system?.fate?.value,
             fateDice
           });
 
-          if (useFate && fateDice > 0) {
+          // IMPORTANT:
+          // Do NOT push Fate state for pure Fate rolls.
+          // Pure Fate already uses Fate as the base pool and must not add Fate again.
+          if (useFate && fateDice > 0 && !isPureFate) {
             fateState.set(actor.id, { useFate: true, fateDice });
             console.log("Fate Patch | fateState.set applied for actor", {
               actorId: actor.id,
@@ -136,11 +141,12 @@ function installDialogGeneralRollPatch() {
               fateDice
             });
           } else {
-            // Either Fate is not used, or there are zero dice.
-            // We still consume any previous state to avoid stale data.
+            // Either Fate is not used, zero dice, or this is a pure Fate roll.
+            // Consume any previous state to avoid stale data.
             const consumed = fateState.consume(actor.id);
-            console.log("Fate Patch | Fate not used or 0 dice, clearing state", {
+            console.log("Fate Patch | Fate state cleared / not applied", {
               actorId: actor.id,
+              isPureFate,
               previousState: consumed
             });
           }
@@ -170,7 +176,6 @@ function installDialogGeneralRollPatch() {
         "Fate Patch | Error when calling original DialogGeneralRoll._generalRoll",
         error
       );
-      // Re-throw so the system can handle it as usual.
       throw error;
     }
 
