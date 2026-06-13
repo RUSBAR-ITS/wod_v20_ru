@@ -8,7 +8,7 @@ body.langRU .wod20.wod-sheet.vampire .tab.discipline .item-row-area.mainpower-ro
 /* Name column: discipline powers, path powers, combo disciplines, rituals */
 body.langRU .wod20.wod-sheet.vampire .tab.discipline .power-itemlist .width-namebox,
 body.langRU .wod20.wod-sheet.vampire .tab.discipline .unsorted-area .width-namebox {
-  width: 300px;
+  width: 400px;
 }
 
 /* Dice columns (attribute / ability) */
